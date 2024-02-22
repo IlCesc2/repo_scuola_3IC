@@ -1,1 +1,2 @@
-# repo_scuola_3IC
+# Informatica
+file di informatica 3IC
