@@ -1,13 +1,6 @@
 package oop.persone;
 
 public class ElencoPersone {
-    /*
-     * ElencoPersone le cui istanze rappresentano elenchi di persone. La classe avrà i seguenti metodi: 
-- un costruttore per creare una lista specificando il numero massimo di persone che è
-possibile inserire nell'elenco; 
-- un metodo aggiungi(Persona p) che aggiunge p all'elenco; 
-- un metodo toString() che stampa la lista delle persone nell'elenco. 
-     */
 
     private int N;
     private Persona[] persone;
@@ -25,4 +18,9 @@ possibile inserire nell'elenco;
         for (Persona p : persone)
             System.out.println(p.getNome());
     }
+
+    public Persona[] getPersone() {
+      return this.persone;
+    }
+    
 }
