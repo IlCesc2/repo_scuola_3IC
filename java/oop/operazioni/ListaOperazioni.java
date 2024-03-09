@@ -19,7 +19,7 @@ public class ListaOperazioni {
         Scanner scan = new Scanner(System.in);
         System.out.println("Inserire N valori");
         int N = scan.nextInt();
-        double[] val = new double[N];
+        double[] val = new double[N]; 
         for (int i = 0; i < N; i++) {
             System.out.println("Inserire N valori");
             val[i] = scan.nextDouble();
@@ -39,7 +39,7 @@ public class ListaOperazioni {
 
     public void leggiFile() {
 
-    }
+    }   
 
 
-}
+}   
