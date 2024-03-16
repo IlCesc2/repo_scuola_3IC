@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/java/oop/oop.iml" filepath="$PROJECT_DIR$/java/oop/oop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/repo_scuola_3IC.iml" filepath="$PROJECT_DIR$/repo_scuola_3IC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/repo_scuola_3IC1.iml" filepath="$PROJECT_DIR$/java/repo_scuola_3IC1.iml" />
+    </modules>
+  </component>
+</project>

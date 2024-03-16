@@ -1,0 +1,25 @@
+Compile command:
+Il comando per compilare: "javac", usa un sacco di opzioni:
+
+"[JavaCompiler]" (-cp [Dependencies]) -d [Dump Path] -sourcepath [Source Directory | EX.: ".\src\"] [Main or Source Files]
+
+Abbiamo le dipendenze designate da "-cp" queste saranno la "Zuclib" probabilmente o altre librerie e/o classi esterne. Si possono concatenare dividendole senza spazi con ";".
+
+Poi abbiamo la directory dove andranno a finire le classi compilate, ovvero "-d". Il compilatore è abbastanza intelligente da fare da solo la struttura delle cartelle dopo aver compilato il tutto.
+
+Il "-sourcepath" dice invece qual'è la cartella di lavoro e tutte le cartelle dentro alla directory che diamo al "-sourcepath" verranno copiate nell'output di "-d" creando così la struttura in automatico.
+
+Il "Main or Source Files" indica che lì ci deve essere o il main del programma o i file che sono separati dal main e non vengono quindi compilati automaticamente chiamando il main come i vari agenti.
+
+Run command:
+Il comando per avviare il main: "java", invece è molto semplice:
+
+"[JavaPath]" (Optional: "-javaagent:[Optional Agent]") -Dfile.encoding=UTF-8 -classpath [Classes Directory | Ex.: .\out\production\BoardGame];Dependencies | Ex.: Zuclib Path] com.company.Main
+
+Per prima cosa abbiamo un sacco di opzioni che sono completamente a scelta dell'utente come un'agente di avvio "-javaagent". Ma queste sono solo opzioni esterne al programma e non servono per forza.
+
+Poi abbiamo "-Dfile.encoding" che dice a java come è codificato il file della classe, questo è importante solo se si sà che la classe è stata codificata in un certo modo altrimenti è opzionale e può causare
+	errori da java per il non riconoscimento della scrittura del file avendogli dato una chiave di codifica sbagliata.
+
+Infine abbiamo le dipendenze che ovviamente sono obbligatorie, dobbiamo dire non solo dove stanno i file delle classi ma anche le librerie esterne.
+	Le classi hanno già il path settato in ".\out\production\BoardGame" perché è lì che il compilatore le mette dai comandi precedenti (vedere "Run main.bat" per i comandi specificati)
