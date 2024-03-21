@@ -11,6 +11,6 @@ public class PalletMin extends Pallet {
     }
     @Override
     public String toString() {
-        return this.getAltezza()+ ", "+ this.getLarghezza()+ ", "+this.getProfondita()+", " + this.contieneBatterieLitio;
+        return super.toString() +", "+ this.contieneBatterieLitio;
     }
 }

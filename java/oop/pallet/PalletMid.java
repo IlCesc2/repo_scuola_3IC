@@ -7,6 +7,6 @@ public class PalletMid extends Pallet {
     }
     @Override
     public String toString() {
-        return this.getAltezza()+ ", "+ this.getLarghezza()+ ", "+this.getProfondita()+", " + this.numeroPezziSovrapponibili;
+        return super.toString() +", "+ this.numeroPezziSovrapponibili;
     }
 }

@@ -7,6 +7,6 @@ public class PalletMax extends Pallet{
     }
     @Override
     public String toString() {
-        return this.getAltezza()+ ", "+ this.getLarghezza()+ ", "+this.getProfondita()+", " + this.peso;
+        return super.toString() +", "+ this.peso;
     }
 }
