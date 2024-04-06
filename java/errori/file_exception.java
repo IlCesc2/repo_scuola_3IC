@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.InvalidObjectException;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -26,16 +27,16 @@ public class file_exception {
             } catch (EmptyStackException e) {
                 points = -1;
                 System.out.println(user + ": Inserire file valido");
-            } catch (InvalidObjectException e ){
+            } catch (FileNotFoundException e ){
                 points = 0;
                 System.out.println(user + ": Inserire file con estensione .java");
             }
             
         }
     }
-    public static int checkFileExtension(String in) throws EmptyStackException, InvalidObjectException {
+    public static int checkFileExtension(String in) throws EmptyStackException, FileNotFoundException {
         if (in.isEmpty() || in == null) throw new EmptyStackException();
-        if (!in.endsWith(".java")) throw new InvalidObjectException("String Invalid");
+        if (!in.endsWith(".java")) throw new FileNotFoundException();
         
         return 1;
     }
