@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class Main2 {
+public class Main {
     static String PATH = "custom_exception\\zamdes.csv";
     static int MAX_LEN = User.class.getDeclaredFields().length;
 
