@@ -1,8 +1,16 @@
-package generics;
 
 import java.util.Scanner;
-
+/**
+ * <div>
+ * Mainnnnnnnnnnnnnn
+ </div>
+ */
 public class Main {
+    
+    /** 
+     * @param args
+     *
+     */
     public static void main(String[] args) {
         Lista<String, String> lisda = new Lista<String, String>();
         Scanner scan = new Scanner(System.in);

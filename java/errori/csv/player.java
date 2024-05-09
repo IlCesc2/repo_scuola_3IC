@@ -1,5 +1,15 @@
 package csv;
 
+/**
+ * ry9eweyrwer
+ * wer
+ * wer
+ * we
+ * r
+ * wer
+ *
+ * */
+
 public class player {
     private String name;
     private boolean capitano;

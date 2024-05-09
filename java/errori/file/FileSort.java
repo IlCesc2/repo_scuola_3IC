@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class FileSort {
-  /*
+  /**
    * legge il nome del file da leggere ( parole.txt)
    * - scorre il file e carica su un array le parole
    * - esegue il sorting delle parole usando un algoritmo a piacere
@@ -51,7 +51,11 @@ public class FileSort {
       System.out.println("Error");
     }
   }
-
+/**
+ *
+ * @param arr
+ * to pare
+ * */
   public static void mergeSort(String[] arr) {
     if (arr.length == 1)
       return;
@@ -65,7 +69,11 @@ public class FileSort {
     for (int i = 0; i < o.length; i++)
       arr[i] = o[i];
   }
-
+  /**
+   *
+   * @param a,b
+   * merge
+   * */
   public static String[] merge(String[] a, String[] b) {
     String[] out = new String[a.length + b.length];
     int i = 0, ia = 0, ib = 0;

@@ -1,0 +1,15 @@
+==== CONFIGS ====		
+{
+    "base_path": "c:\\Users\\francesco.marchetti\\Desktop\\repo_scuola_3IC\\java\\errori\\generics",
+    "out": "c:\\Users\\francesco.marchetti\\Desktop\\repo_scuola_3IC\\java\\errori\\generics\\javadoc",
+    "javadoc_executable": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.345.1-hotspot\\jre\\bin\\",
+    "exclude": [],
+    "raw_params": ""
+}
+
+==== ERRORS ====
+	Could not find a valid javadoc executable located in: 
+	C:\Program Files\Eclipse Adoptium\jdk-8.0.345.1-hotspot\jre\bin\
+	The javadoc executable path should end in with the executable file name and extension.
+
+

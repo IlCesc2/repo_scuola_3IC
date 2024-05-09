@@ -1,10 +1,19 @@
 package generics;
 import java.util.ArrayList;
-
+/**
+* <div>
+ * Listaaaaaaaaaaaaaaaaa
+  </div>
+ */
 public class Lista<T,F> {
 
     ArrayList<Coppia<T,F>> couples = new ArrayList<Coppia<T,F>>();
     
+    
+    /** 
+     * @param newVal
+     * hola
+     */
     public void aggiungi(Coppia<T,F> newVal) {
         for (Coppia<T,F> coppia : couples) {
             if (coppia.compare(newVal)) {
@@ -13,6 +22,10 @@ public class Lista<T,F> {
         }
         couples.add(newVal);
     }
+    
+    /** 
+     * @param newVal
+     */
     public void elimina(Coppia<T,F> newVal) {
         for (int i = 0; i < couples.size(); i++) {
             if (couples.get(i).compare(newVal)) {
@@ -34,7 +47,6 @@ public class Lista<T,F> {
     public String toString() {
         String out ="";
         for (Coppia<T,F> coppia : couples) {
-            // TODO Auto-generated method stub
             out+=coppia.toString()+"\n";
         }
         return out;

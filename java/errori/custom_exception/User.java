@@ -1,5 +1,8 @@
 package custom_exception;
-
+/**
+ * asdasdasdasdad
+ * userszaxasdadssdasd
+ * */
 public class User {
     //Username; Identifier;One-time password;Recovery code;First name;Last name;Department;Location
     private String username; 
