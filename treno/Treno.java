@@ -1,16 +1,17 @@
 
-
 public class Treno {
     private Locomotiva head = new Locomotiva();
     private Locomotiva tail = new Locomotiva();
     private int totInside = 0;
-    private int ID=0;
+
+    private int ID = 0;
 
     public int getTotInside() {
         return this.totInside;
     }
+
     public int getID() {
-        return this.totInside;
+        return this.ID;
     }
 
     public void setTotInside(int totInside) {
@@ -20,7 +21,8 @@ public class Treno {
     Treno(int ID) {
         head.setLink(tail, true);
         tail.setLink(head, false);
-        this.ID= ID;
+
+        this.ID = ID;
     }
 
     public void addVagone(Vagone vagone) {
@@ -30,30 +32,36 @@ public class Treno {
 
         tail.getPrev().setNext(vagone);
         tail.setPrev(vagone);
+        this.totInside += vagone.populate();
 
     }
 
     public Vagone removeVagone(Vagone vagone) {
-        if (vagone == head) {
+
+        if (vagone.equals(head)) {
             head.setNext(head.getNext());
-        } else if (vagone == tail) {
+        } else if (vagone.equals(tail)) {
+            System.out.println("WTF");
             tail.setPrev(tail.getPrev());
-            ;
+
             tail.setNext(null);
 
         }
 
         Vagone current = head;
 
-        while (!(current.getNext() == vagone)) {
+        while (!(current.getNext().equals(vagone))) {
             current = current.getNext();
         }
+        System.out.println(current.getPasseggeri());
         Vagone out = current;
         current.setNext(current.getNext().getNext());
-        current.getNext().getNext().setPrev(current);
+        current.getNext().setPrev(current);
+
+        this.totInside -= vagone.getPasseggeri();
+
         return out;
     }
-
 
     /*
      * public void moveVagoneInTrain(Vagone vagoneToMove, int destination) {
@@ -74,12 +82,14 @@ public class Treno {
      * }
      */
 
-    public void printVagone(int index) {
+    public void printTrain() {
         Vagone current = head;
-
-        for (int i = 0; i < index; i++) {
+        while (current != null) {
+            System.out.println("Vagone: " + current.getClass() + ", Passeggeri: " + current.getPasseggeri());
             current = current.getNext();
         }
+        System.out.println("---------------------");
+
         // print stuff
     }
 
