@@ -5,6 +5,7 @@ public class VagonePasseggeri extends Vagone {
     VagonePasseggeri(){
         
         passeggeri= new Passeggero[MAX_PASSEGGERI];
+        populate();
     }
     @Override
     public int populate() {

@@ -32,7 +32,7 @@ public class Treno {
 
         tail.getPrev().setNext(vagone);
         tail.setPrev(vagone);
-        this.totInside += vagone.populate();
+        this.totInside += vagone.getPasseggeri();
 
     }
 

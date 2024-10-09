@@ -21,6 +21,7 @@ public class Manager {
         return trenoSel;
     }
 
+
     // muovi da convoglio a convoglio un vagone
     public void moveVagone(int IDStart, int IDTarget, Vagone vagone) {
         Treno trenoStart = null;
