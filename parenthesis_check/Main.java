@@ -11,9 +11,10 @@ public class Main {
         System.out.println("Inserire Stringa: ");
         String p = scan.next();
 
-        System.out.println(checker(p) ? "Stringa Valida":"Stringa Invalida");
+        System.out.println(checker(p) ? "Stringa Valida" : "Stringa Invalida");
 
     }
+
     public static boolean checker(String p) {
         HashMap<Character, Character> check = new HashMap<>();
         check.put(')', '(');
@@ -23,9 +24,15 @@ public class Main {
 
         for (char c : p.toCharArray()) {
             Character val = check.get(c);
-            if (val== null) stack.push(c);
-            else if (val== stack.peek()) stack.pop();
-            else return false;
+            int asciiVal = (int) c;
+            int asciiHead = stack.peek() != null ? (int) stack.peek() : Integer.MAX_VALUE;
+
+            if (val == null && asciiVal <= asciiHead)
+                stack.push(c);
+            else if (val == stack.peek())
+                stack.pop();
+            else
+                return false;
         }
         return stack.getLen() == 0;
     }

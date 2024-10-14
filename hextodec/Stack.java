@@ -20,8 +20,7 @@ public class Stack {
 
     // pop
     public void pop() {
-        if (head == null)
-            return;
+        if (head == null) return;
         head = head.getNext();
         len--;
     }
@@ -34,8 +33,9 @@ public class Stack {
     // push
     public void push(Character value) {
         Node newNode = new Node(value);
-        if (head == null)
+        if (head == null) {
             head = newNode;
+        }
         newNode.setNext(head);
 
         head = newNode;
