@@ -55,73 +55,34 @@ public class LinkedList {
         Node buf = head;
         Node sel = head.getNext();
         Node prev = head;
+        Node selPrev = prev;
 
-        while (buf.getNext() != null) {
-    /*
-            System.out.print("Prev:");
-            prev.printNode();
-            System.out.print("sel:");
+        while (buf != null) {
 
-            sel.printNode();
-            System.out.print("buf:");
-
-            buf.printNode();
-            System.out.println("--");
-     */
-
-            if (buf.getPriority() > buf.getNext().getPriority()) {
-                System.out.print("Prev:");
-                prev.printNode();
-                System.out.print("sel:");
-        
-                sel.printNode();
-                System.out.print("buf:");
-        
-                buf.printNode();
-                System.out.println("--");
-                prev = buf;
-                sel = buf.equals(head) ? buf : buf.getNext();
+            if (buf.getPriority() < sel.getPriority()) {
+                sel = buf;
+                selPrev = prev;
+                selPrev.printNode();
                 break;
-            }
-
+            } 
+            prev = buf;
             buf = buf.getNext();
         }
-    
 
         if (sel.getPatientName().equals(head.getPatientName())) {
             head = head.getNext();
-        } else if (sel.getNext() == null) {
+        } else if (sel.getNext() == null) {            
             prev.setNext(null);
-        } else {
-
-            prev.setNext(sel.getNext());
+        } else { 
+            selPrev.setNext(sel.getNext());
         }
-
-        // System.out.println(sel.getPatientName() + sel.getPriority());
-
         size--;
         return sel;
 
     }
-    /*
-     * while (buf != null) {
-     * if (sel.getPriority() > buf.getPriority()) {
-     * prev = sel;
-     * sel = buf;
-     * }
-     * buf = buf.getNext();
-     * }
-     * 
-     * if (sel.equals(head)) {
-     * head = head.getNext();
-     * } else if (sel.equals(prev)) {
-     * sel.setNext(null);
-     * } else {
-     * prev.setNext(prev.getNext().getNext());
-     * }
-     */
 
     public void printAll() {
+        System.out.println("------------------");
         if (head == null)
             return;
 
@@ -130,6 +91,7 @@ public class LinkedList {
         while (buf != null) {
             buf.printNode();
             buf = buf.getNext();
+        
         }
     }
 

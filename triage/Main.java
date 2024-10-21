@@ -1,6 +1,3 @@
-/**
- * Main
- */
 public class Main {
 
     public static void main(String[] args) {
@@ -13,14 +10,15 @@ public class Main {
         list.add("Tommaso", 4);
         list.add("Tyler", 0);
         list.printAll();
-        System.out.println("----------------");
         list.removeNext();
-        System.out.println("----------------");
-        list.printAll();
-        System.out.println("----------------");
         list.removeNext();
-        System.out.println("----------------");
+        list.removeNext();
         list.printAll();
+        list.removeNext();
+        list.printAll();
+
+
+       
    
     }
 }
