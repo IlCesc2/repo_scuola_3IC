@@ -39,29 +39,60 @@ public class Main {
         HashMap<String, Integer> termsOccurency = new HashMap<>();
 
         HashMap<String, Double> tfidf = tfidf(files, fileNamesArr, termsOccurency);
-        HashMap<String, Double> sortByValue= sortByValue(tfidf);
-        for (String k : sortByValue.keySet()) {
-            System.out.println(k + "," + sortByValue.get(k));
-        }
-    }
-    public static HashMap<String, Double> sortByValue(HashMap<String, Double> hm)
-    {
-        // Create a list from elements of HashMap
-        List<Map.Entry<String, Double> > list =
-               new LinkedList<Map.Entry<String, Double> >(hm.entrySet());
+        /*
+         * 
+         // starting to test files singularly
+           HashMap<String, Integer> a= fff(termsOccurency);
+           for (String k : termsOccurency.keySet()) {
+           System.out.println(k + "," + a.get(k));
+           }
+          
  
+           */
+          HashMap<String, Double> sortByValue = sortByValue(tfidf);
+          for (String k : sortByValue.keySet()) {
+              System.out.println(k + "," + sortByValue.get(k));
+          }
+
+    }
+
+    // for testing
+    public static HashMap<String, Double> sortByValue(HashMap<String, Double> hm) {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(hm.entrySet());
+
         // Sort the list
-        Collections.sort(list, new Comparator<Map.Entry<String, Double> >() {
-            public int compare(Map.Entry<String, Double> o1, 
-                               Map.Entry<String, Double> o2)
-            {
+        Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
+            public int compare(Map.Entry<String, Double> o1,
+                    Map.Entry<String, Double> o2) {
                 return (o1.getValue()).compareTo(o2.getValue());
             }
         });
-         
-        // put data from sorted list to hashmap 
+
+        // put data from sorted list to hashmap
         HashMap<String, Double> temp = new LinkedHashMap<String, Double>();
         for (Map.Entry<String, Double> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
+
+    // for testing
+    public static HashMap<String, Integer> fff(HashMap<String, Integer> hm) {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(hm.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                    Map.Entry<String, Integer> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // put data from sorted list to hashmap
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
             temp.put(aa.getKey(), aa.getValue());
         }
         return temp;
@@ -77,20 +108,21 @@ public class Main {
     public static double tf(TFile file, String term, HashMap<String, Integer> termsOccurency) {
         // tf = (N di volte in cui il termine è nel file)/ (N di termini nel file)
         String key = file.getName() + term;
-        String generalKey = file.getName();
+        String[] terms = file.getTerms();
         Integer currentVal = termsOccurency.get(key);
+        Double generalVal= (double) terms.length;
+        
         if (currentVal == null) {
             int val = 0;
-            for (String t : file.getTerms())
+            for (String t : terms)
                 if (t.equals(term))
                     val++;
-
             termsOccurency.put(key, val);
-            Integer currentGeneralValue = termsOccurency.get(generalKey);
-            termsOccurency.put(generalKey, (currentGeneralValue != null ? currentGeneralValue : 0) + val);
         }
 
-        return termsOccurency.get(key) / termsOccurency.get(generalKey);
+        return(double) termsOccurency.get(key) / generalVal;
+
+    
     }
 
     public static double idf(TFile file, String term, String[] filenames, HashMap<String, Integer> termsOccurency) {
@@ -100,7 +132,8 @@ public class Main {
         for (String fName : filenames) {
             String fileName = fName + term;
             Integer currentOccurency = termsOccurency.get(fileName);
-            if (currentOccurency != null) occurency++;
+            if (currentOccurency != null)
+                occurency++;
         }
 
         return Math.log(N / occurency);
@@ -115,6 +148,7 @@ public class Main {
                 if (tfidf.get(term) == null) {
                     double tf = tf(tFile, term, termsOccurency);
                     double idf = idf(tFile, term, filenames, termsOccurency);
+                    //System.out.println(tf+" "+idf);
                     tfidf.put(term, tf / idf);
                 }
             }
@@ -148,7 +182,5 @@ public class Main {
         TFile newFile = new TFile(termsArr.length, fileName, termsArr);
         return newFile;
     }
-
-    
 
 }
