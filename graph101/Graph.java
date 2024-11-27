@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Graph {
     private ArrayList<Node> nodes = new ArrayList<>();
@@ -68,7 +69,8 @@ public class Graph {
      * 
      */
     public boolean isFullyConnected() {
-        if (nodes.size() <1) return false;
+        if (nodes.size() < 1)
+            return false;
         for (int i = 0; i < edges.size(); i++) {
             for (int j = 0; j < edges.get(i).size(); j++) {
                 // checks symmetrically if there is a direct connection between two nodes
@@ -80,8 +82,10 @@ public class Graph {
     }
 
     public Node maxOrder() {
-        if (nodes.size() ==0) return null;
-        if (nodes.size() ==1) return nodes.get(0);
+        if (nodes.size() == 0)
+            return null;
+        if (nodes.size() == 1)
+            return nodes.get(0);
 
         int[] orders = calcOrders();
         int max = Integer.MIN_VALUE;
@@ -93,8 +97,10 @@ public class Graph {
     }
 
     public Node minOrder() {
-        if (nodes.size() ==0) return null;
-        if (nodes.size() ==1) return nodes.get(0);
+        if (nodes.size() == 0)
+            return null;
+        if (nodes.size() == 1)
+            return nodes.get(0);
 
         int[] orders = calcOrders();
         int min = Integer.MAX_VALUE;
@@ -117,25 +123,46 @@ public class Graph {
         return orders;
     }
 
-    public boolean isConnected(int startingIndex, int direction) {
-        if (nodes.size() <1) return false;
-        //System.out.println("Direction:"+ direction);
-        for (int j = startingIndex; direction == 1 ? j < edges.get(0).size(): j > -1; j+=direction) {
-            //System.out.println(startingIndex+", "+j+", "+ (edges.get(0).size()-1));
-         
-            if (startingIndex == j && j == edges.get(0).size()-1) {
-                System.out.println("IN");
-                continue;
-            }
-            if (edges.get(startingIndex).get(j) != 0) {
-                
-                return isConnected(j, direction);
+    /*
+     * 
+     * 
+     * public boolean isConnected(int startingIndex, int direction) {
+     * if (nodes.size() <1) return false;
+     * //System.out.println("Direction:"+ direction);
+     * for (int j = startingIndex; direction == 1 ? j < edges.get(0).size(): j > -1;
+     * j+=direction) {
+     * //System.out.println(startingIndex+", "+j+", "+ (edges.get(0).size()-1));
+     * 
+     * if (startingIndex == j && j == edges.get(0).size()-1) {
+     * //System.out.println("IN");
+     * continue;
+     * }
+     * if (edges.get(startingIndex).get(j) != 0) {
+     * 
+     * return isConnected(j, direction);
+     * }
+     * }
+     * //System.out.println("out");
+     * boolean cond =direction == 1 ? startingIndex !=
+     * edges.get(startingIndex).size()-1 :startingIndex!=0 ;
+     * if (cond) return false;
+     * return direction == 1 ? isConnected(startingIndex, -1): true;
+     * }
+     */
+    public boolean isConnected(ArrayList<ArrayList<Integer>> edges) {
+        for (int i = 0; i < edges.size(); i++) {
+            ArrayList<Integer> vertex = edges.get(i);
+            for (int j = 0; j < vertex.size(); j++) {
+                HashMap<Number, Boolean> hasBeenVisited = new HashMap<>();
+                for (Node node : nodes) {
+                    hasBeenVisited.put(node.getId(), nodes.indexOf(node) == i);
+                }
+                if (vertex.get(j) != 0) {
+
+                }
             }
         }
-        //System.out.println("out");
-        boolean cond =direction == 1 ? startingIndex != edges.get(startingIndex).size()-1 :startingIndex!=0 ;
-        if (cond) return false;
-        return direction == 1 ? isConnected(startingIndex, -1): true;
     }
+    
 
 }
