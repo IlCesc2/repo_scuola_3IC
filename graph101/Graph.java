@@ -60,14 +60,6 @@ public class Graph {
 
     }
 
-    /*
-     * boolean isFullyConnected(), che ritorna true sse per ogni coppia di vertici
-     * esiste un arco che li connette.
-     * - T maxOrder(), che ritorna il nodo che ha ordine massimo
-     * - T minOrder(), che ritorna il nodo che ha ordine minimo
-     * - boolean isConnected: che ritorna true sse il grafo è connesso.
-     * 
-     */
     public boolean isFullyConnected() {
         if (nodes.size() < 1)
             return false;
@@ -149,17 +141,35 @@ public class Graph {
      * return direction == 1 ? isConnected(startingIndex, -1): true;
      * }
      */
-    public boolean isConnected(ArrayList<ArrayList<Integer>> edges) {
+    public boolean isConnected() {
+
+        // loop trough all nodes
+        // loop trough all edges of node
+        // if there is an edge, then:
+        //      set currentVertexVisited = true
+        //      to next vertex
+        // if all of the edges have been traversed, returns true
+
         for (int i = 0; i < edges.size(); i++) {
             ArrayList<Integer> vertex = edges.get(i);
-            for (int j = 0; j < vertex.size(); j++) {
-                HashMap<Number, Boolean> hasBeenVisited = new HashMap<>();
-                for (Node node : nodes) {
-                    hasBeenVisited.put(node.getId(), nodes.indexOf(node) == i);
-                }
-                if (vertex.get(j) != 0) {
+            HashMap<Integer,Boolean> visited= new HashMap<>();
+            for (Node node : nodes) {
+                visited.put(node.getId(), nodes.indexOf(node) == i);
+            }
+            traverse(edges, visited, vertex);
+            for (Integer id : visited.keySet()) {
+                if(!visited.get(id) && id!= nodes.get(i).getId()) return false;
+            }
+        }
+        return true;
 
-                }
+    }
+
+    public void traverse(ArrayList<ArrayList<Integer>> edges, HashMap<Integer,Boolean> visited, ArrayList<Integer> vertex){
+        for (int i = 0; i < vertex.size(); i++) {
+            if (vertex.get(i) !=0 && !visited.get(nodes.get(i).getId())) {
+                visited.put(nodes.get(i).getId(), true);
+                traverse(edges, visited, edges.get(i));
             }
         }
     }

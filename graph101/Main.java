@@ -14,7 +14,7 @@ public class Main {
         int[][] sEdges = {{1,1}}; //[[dest, weight]]
         int[][] sEdges2 = {{2,1}};
         int[][] sEdges3 = {{3,1}};
-        int[][] sEdges4 = {{0,1}};
+        int[][] sEdges4 = {{2,1}};
         
         graph.addEdge(0, sEdges);
         graph.addEdge(1, sEdges2);
@@ -22,6 +22,6 @@ public class Main {
         graph.addEdge(3, sEdges4);
         graph.show();
 
-        System.out.println(graph.isConnected(0,1));
+        graph.isConnected();
     }
 }
