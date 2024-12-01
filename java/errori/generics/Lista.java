@@ -9,7 +9,6 @@ public class Lista<T,F> {
 
     ArrayList<Coppia<T,F>> couples = new ArrayList<Coppia<T,F>>();
     
-    
     /** 
      * @param newVal
      * hola

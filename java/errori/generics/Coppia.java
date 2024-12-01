@@ -19,7 +19,7 @@ public class Coppia<T,F> {
      * @return boolean
      */
     public boolean compare(Coppia<T,F> b) {
-        if (b.val1== this.val1 && b.val2== this.val2 ) return true;
+        if (b.val1== this.val1 && b.val2== this.val2) return true;
         return false; 
     }
     @Override

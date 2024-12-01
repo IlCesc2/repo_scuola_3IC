@@ -6,7 +6,7 @@ public class factorial {
           Scanner scan = new Scanner(System.in);
           System.out.println("Numero:");
           int base = scan.nextInt();
-
+        // 5 : 1*2*3*4*5
           System.out.println("Risultato: "+factorial(base));
     }
     public static int factorial(int base) {

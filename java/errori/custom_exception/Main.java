@@ -17,7 +17,7 @@ import java.util.UUID;
  * g
  * sfdg
  * dfg
- * */
+ **/
 
 public class Main {
     static String PATH = "custom_exception\\zamdes.csv";
@@ -48,11 +48,13 @@ public class Main {
             System.out.println("File non trovato");
         } finally {
             fileReader.close();
+
         }
         for (User user : users) {
             System.out.println(user.toString());
         }
     }
+
 
     public static User reading(File file, String currentLine, int i) throws CException, FileNotFoundException {
         try {
@@ -91,7 +93,7 @@ public class Main {
 
     }
 
-    public static String genOneTimePW() {
+    public static String genOneTimePW()  {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().substring(0, 6);
     }
