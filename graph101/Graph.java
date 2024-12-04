@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 
 public class Graph {
     private ArrayList<Node> nodes = new ArrayList<>();
@@ -174,5 +175,73 @@ public class Graph {
         }
     }
     
+    public int[] djkstra(int source) {
+        int [] D = new int[nodes.size()];
+        int [] P = new int[nodes.size()];
+        ArrayList<ArrayList<Integer>> Q = (ArrayList<ArrayList<Integer>>) edges.clone();
+        
+        for (int i = 0; i < D.length; i++) {
+            D[i] = Integer.MAX_VALUE;
+            Q.add(edges.get(i));
+        }
+        D[source] =0;
 
+        while (Q.size() > 0) {
+            int u = 0;
+            for (int i = 0; i < D.length; i++) {
+                if(D[i] < u) u = D[i];
+            }
+            ArrayList<Integer> currentVertex = Q.get(u);
+            Q.remove(u);
+            for (int v = 0; v < P.length; v++) {
+                if (currentVertex.get(v) ==0) continue; // no edge in matrix
+                int sum = D[u] + currentVertex.get(v);
+                if (sum < D[v]) {
+                    D[v]=sum;
+                    P[v]=u;
+                }
+            }
+        }
+
+        return D;
+    }
+
+    public int[] bellman_ford(int source) {
+        int [] D = new int[nodes.size()];
+        int [] P = new int[nodes.size()];
+        
+        for (int i = 0; i < D.length; i++) {
+            D[i] = Integer.MAX_VALUE;
+        }
+        D[source] =0;
+
+        for (int i = 0; i < edges.size(); i++) {
+            ArrayList<Integer> currentVertex = edges.get(i);
+            for (int v = 0; v < P.length; v++) {
+                if (currentVertex.get(v) ==0) continue; // no edge in matrix
+                int sum = D[i] + currentVertex.get(v);
+                if (sum < D[v]) {
+                    D[v]=sum;
+                    P[v]=i;
+                }
+            }
+        }
+
+        loop:
+        for (int i = 0; i < edges.size(); i++) {
+            ArrayList<Integer> currentVertex = edges.get(i);
+            for (int v = 0; v < edges.get(0).size(); v++) {
+                if (currentVertex.get(v) ==0) continue; 
+                int sum = D[i] + currentVertex.get(v);
+                if (sum < D[v]) {
+                    System.out.println("C'è un loop negativo");
+                    break loop;
+                }
+            }
+        }
+
+        return D;
+    }
 }
+
+
