@@ -11,7 +11,6 @@ public class Main {
        
         Node[] nodes = {node0,node1,node2,node3};
         Graph graph = new Graph(nodes);
-        graph.show();
 
         int[][] sEdges = {{1,1}}; //[[dest, weight]]
         int[][] sEdges2 = {{2,1}};

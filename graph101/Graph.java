@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -147,91 +148,113 @@ public class Graph {
         // loop trough all nodes
         // loop trough all edges of node
         // if there is an edge, then:
-        //      set currentVertexVisited = true
-        //      to next vertex
+        // set currentVertexVisited = true
+        // to next vertex
         // if all of the edges have been traversed, returns true
 
         for (int i = 0; i < edges.size(); i++) {
             ArrayList<Integer> vertex = edges.get(i);
-            HashMap<Integer,Boolean> visited= new HashMap<>();
+            HashMap<Integer, Boolean> visited = new HashMap<>();
             for (Node node : nodes) {
                 visited.put(node.getId(), nodes.indexOf(node) == i);
             }
             traverse(edges, visited, vertex);
             for (Integer id : visited.keySet()) {
-                if(!visited.get(id) && id!= nodes.get(i).getId()) return false;
+                if (!visited.get(id) && id != nodes.get(i).getId())
+                    return false;
             }
         }
         return true;
 
     }
 
-    public void traverse(ArrayList<ArrayList<Integer>> edges, HashMap<Integer,Boolean> visited, ArrayList<Integer> vertex){
+    public void traverse(ArrayList<ArrayList<Integer>> edges, HashMap<Integer, Boolean> visited,
+            ArrayList<Integer> vertex) {
         for (int i = 0; i < vertex.size(); i++) {
-            if (vertex.get(i) !=0 && !visited.get(nodes.get(i).getId())) {
+            if (vertex.get(i) != 0 && !visited.get(nodes.get(i).getId())) {
                 visited.put(nodes.get(i).getId(), true);
                 traverse(edges, visited, edges.get(i));
             }
         }
     }
-    
+    /*     
+    [0, 1, 0, 0]
+    [0, 0, 1, 0]
+    [0, 0, 0, 1]
+    [1, 0, 0, 0]
+     */
+
     public int[] djkstra(int source) {
-        int [] D = new int[nodes.size()];
-        int [] P = new int[nodes.size()];
-        ArrayList<ArrayList<Integer>> Q = (ArrayList<ArrayList<Integer>>) edges.clone();
+        int[] D = new int[nodes.size()];
+        int[] P = new int[nodes.size()];
         
+        ArrayList<Node> Q = (ArrayList<Node>) nodes.clone();
         for (int i = 0; i < D.length; i++) {
             D[i] = Integer.MAX_VALUE;
-            Q.add(edges.get(i));
         }
-        D[source] =0;
+        D[source] = 0;
+        P[source] = -1;
 
         while (Q.size() > 0) {
+            int min = Integer.MAX_VALUE;
             int u = 0;
-            for (int i = 0; i < D.length; i++) {
-                if(D[i] < u) u = D[i];
-            }
-            ArrayList<Integer> currentVertex = Q.get(u);
-            Q.remove(u);
-            for (int v = 0; v < P.length; v++) {
-                if (currentVertex.get(v) ==0) continue; // no edge in matrix
-                int sum = D[u] + currentVertex.get(v);
-                if (sum < D[v]) {
-                    D[v]=sum;
-                    P[v]=u;
+
+            for (int i = 0; i < Q.size(); i++) {
+                if (D[nodes.indexOf(Q.get(i))] < min) {
+                    u = i;
+                    min = D[i];
                 }
             }
+
+            Node currentVertex = Q.get(u);
+            Q.remove(u);
+
+            ArrayList<Integer> currentEdges = edges.get(nodes.indexOf(currentVertex));
+            u=nodes.indexOf(currentVertex);
+
+            for (int v = 0; v < D.length; v++) {
+                if (currentEdges.get(v) == 0)
+                    continue; // no edge in matrix
+           
+                int sum = D[u] + currentEdges.get(v);
+                if (sum < D[v]) {
+                    D[v] = sum;
+                    P[v] = u;
+                }
+            }
+
         }
 
         return D;
     }
 
     public int[] bellman_ford(int source) {
-        int [] D = new int[nodes.size()];
-        int [] P = new int[nodes.size()];
-        
+        int[] D = new int[nodes.size()];
+        int[] P = new int[nodes.size()];
+
         for (int i = 0; i < D.length; i++) {
             D[i] = Integer.MAX_VALUE;
         }
-        D[source] =0;
+        D[source] = 0;
 
         for (int i = 0; i < edges.size(); i++) {
             ArrayList<Integer> currentVertex = edges.get(i);
             for (int v = 0; v < P.length; v++) {
-                if (currentVertex.get(v) ==0) continue; // no edge in matrix
+                if (currentVertex.get(v) == 0)
+                    continue; // no edge in matrix
                 int sum = D[i] + currentVertex.get(v);
                 if (sum < D[v]) {
-                    D[v]=sum;
-                    P[v]=i;
+                    D[v] = sum;
+                    P[v] = i;
                 }
             }
         }
 
-        loop:
-        for (int i = 0; i < edges.size(); i++) {
+        loop: for (int i = 0; i < edges.size(); i++) {
             ArrayList<Integer> currentVertex = edges.get(i);
             for (int v = 0; v < edges.get(0).size(); v++) {
-                if (currentVertex.get(v) ==0) continue; 
+                if (currentVertex.get(v) == 0)
+                    continue;
                 int sum = D[i] + currentVertex.get(v);
                 if (sum < D[v]) {
                     System.out.println("C'è un loop negativo");
@@ -243,5 +266,3 @@ public class Graph {
         return D;
     }
 }
-
-
