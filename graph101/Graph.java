@@ -1,8 +1,12 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class Graph {
     private ArrayList<Node> nodes = new ArrayList<>();
@@ -187,7 +191,7 @@ public class Graph {
     public int[] djkstra(int source) {
         int[] D = new int[nodes.size()];
         int[] P = new int[nodes.size()];
-        
+
         ArrayList<Node> Q = (ArrayList<Node>) nodes.clone();
         for (int i = 0; i < D.length; i++) {
             D[i] = Integer.MAX_VALUE;
@@ -265,4 +269,62 @@ public class Graph {
 
         return D;
     }
+
+    public void kruskal(){
+        // [i,j]:w
+        HashMap<Integer[], Integer> edges = new HashMap<>();
+
+        for (int i = 0; i < edges.size(); i++) {
+            for (int j = 0; j < edges.size(); j++) {
+                Integer[] key = {i,j};
+                int w = edges.get(key);
+                if (w > 0) {
+                    edges.put(key, w);
+                }
+            }
+        }
+        HashMap<Integer[], Integer> sortedEdges = new HashMap<>();
+        ArrayList<Integer> vals = new ArrayList<>();
+        for (Integer i : edges.values()) {
+            vals.add(i);
+        }        
+        vals.sort(null);
+        System.out.println(Arrays.toString(vals.toArray()));
+        
+        for (Integer i : vals) {
+            for (Entry<Integer[], Integer> entry  : edges.entrySet()) {
+                if (entry.getValue() == i) {
+                    sortedEdges.put(entry.getKey(), i);
+                }
+            }
+        }
+
+
+
+        ArrayList<Integer> nodesMst = new ArrayList<>();
+        ArrayList<Integer[]> edgesMst = new ArrayList<>();
+
+        for (Entry<Integer[], Integer> entry  : sortedEdges.entrySet()) {
+
+        }
+
+
+
+    }
+
+    public boolean areNodesInSameTree(int ID1,int ID2, ArrayList<Integer> nodesMst,ArrayList<Integer[]> edgesMst) {
+        /*
+         if (nodesMst.indexOf(ID1) != -1 || nodesMst.indexOf(ID2) != -1) {
+            return false;
+        }
+         */
+       
+        
+        for (int i = 0; i < edgesMst.size(); i++) {
+            
+        }
+        return true;
+    }
+
+    
 }
