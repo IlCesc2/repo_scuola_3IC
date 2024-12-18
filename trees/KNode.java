@@ -1,6 +1,6 @@
-public class Node {
+public class KNode {
     private int ID;
-    private Node[] children;
+    private KNode[] children;
     private int NChildren = 0;
     public void setID(int ID) {
         this.ID = ID;
@@ -14,7 +14,7 @@ public class Node {
         this.NChildren = NChildren;
     }
 
-    public Node(int ID, Node[] children) {
+    public KNode(int ID, KNode[] children) {
         this.ID = ID;
         this.children = children;
     }
@@ -23,15 +23,15 @@ public class Node {
         return this.ID;
     }
 
-    public Node[] getChildren() {
+    public KNode[] getChildren() {
         return this.children;
     }
 
-    public void setChildren(Node[] children) {
+    public void setChildren(KNode[] children) {
         this.children = children;
     }
 
-    public void editChild(int ID, Node newNode) {
+    public void editChild(int ID, KNode newNode) {
         for (int i = 0; i < children.length; i++) {
             if (children[i].ID == ID) {
                 children[i] = newNode;
@@ -39,12 +39,12 @@ public class Node {
         }
     }
 
-    public int addChild(Node newNode, Node node, int K) {
+    public int addChild(KNode newNode, KNode node, int K) {
         if (node.NChildren < K) {
             node.children[node.NChildren] = newNode;            
             return 0;
         }
-        for (Node child : node.children) {
+        for (KNode child : node.children) {
             if (addChild(newNode, child, K) ==0) break;
         }
         return 1;
