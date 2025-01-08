@@ -45,26 +45,22 @@ public class Main {
 
         BTree tree = new BTree(node1);
         BNode node6 = new BNode(6, null, null);
-        System.out.print("In Order: ");
-        tree.inorder(tree.getHead());
-        System.out.println();
-        /*
-         * System.out.print("Post Order: ");
-         * tree.postorder(tree.getHead());
-         * System.out.println();
-         * 
-         * System.out.print("Pre Order: ");
-         * tree.preorder(tree.getHead());
-         * System.out.println();
-         */
-        tree.addNode(node1);
+         
         tree.addNode(node2);
         tree.addNode(node3);
         tree.addNode(node4);
         tree.addNode(node5);
         tree.addNode(node6);
-        System.out.print("In Order: ");
+        System.out.println("In Order: ");
         tree.inorder(tree.getHead());
+        System.out.println();
+                
+        System.out.println("Post Order: ");
+        tree.postorder(tree.getHead());
+        System.out.println();
+        
+        System.out.println("Pre Order: ");
+        tree.preorder(tree.getHead());
         System.out.println();
     }
 }

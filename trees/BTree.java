@@ -58,11 +58,12 @@ public class BTree {
             }
             if (current.getRight() != null) {
                 q.add(current.getRight());
+
             }
 
             System.out.println(current.getID());
 
-            
+          
         }
     }
 
