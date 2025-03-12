@@ -23,6 +23,9 @@ public class Lobby {
     public HashMap<String, Socket> getClients() {
         return clients;
     }
+    public void addClient(Socket socket, String name){
+        this.clients.put(name, socket);
+    }
     
     
 

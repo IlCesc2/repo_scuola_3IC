@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 
+// TODO: CREATE LOGIC THAT HANDLES THE LOBBY ARRAY AND SENDS THE NAME
 public class TcpChatClient {
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 6969)) {
