@@ -54,7 +54,6 @@ public class Main {
                 case 4:
                     // sposta da parcheggio -> convoglio (e viceversa)
                     m.moveVagoneFromParcheggio(trainID, test, true);
-                   
 
                     break;
                 case 5:
@@ -69,6 +68,7 @@ public class Main {
                 default:
                     break;
             }
+            m.getTrain(trainID).printTrain();
         }
     }
 

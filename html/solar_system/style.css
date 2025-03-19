@@ -1,0 +1,29 @@
+.backButton{
+    background-color: green ;
+    opacity: 90%;
+    padding: 30px;
+    margin: 5px;
+    
+   
+    border: 2px;
+    border-radius: 15px;
+    border-color: green;
+    color: white; 
+    font-weight: 700;
+    font-size: large;
+}
+.backButtons{
+    display: flex;
+    margin-top: 100px;
+}
+.details {
+    display: flex; 
+    justify-content: space-between; 
+}
+.title{
+    text-align: center;
+    background-image: linear-gradient(to right, lime, blue);
+    color: transparent;
+    background-clip: text;
+}
+

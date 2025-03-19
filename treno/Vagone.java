@@ -4,7 +4,7 @@ public class Vagone {
     static int MAX_PASSEGGERI = 100;
     private Vagone next;
     private Vagone prev;
-    private int passeggeri =0;
+    private int passeggeri =0; // qt
 
 
     public int getPasseggeri() {
