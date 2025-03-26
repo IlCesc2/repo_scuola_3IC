@@ -72,13 +72,11 @@ class ClientHandler extends Thread {
                         i++;
                     }
                     
-                    if (i < lobbies.size()) {
-                        System.out.println(i+" bro");
+                    if (i == lobbies.size()) {
                         out.println("code:403");
                     }
                 } else if (!isClientAuthed) {
                     // LOGIN SELECTION
-                    System.out.println("BRO" + inputLine);
                     if (lobbySelected.getClients().get(inputLine) == null) {
                         isClientAuthed = true;
                         out.println("code:200");

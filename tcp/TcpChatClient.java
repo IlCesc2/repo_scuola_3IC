@@ -39,7 +39,6 @@ class Writer extends Thread {
             Reader reader = new Reader(socket);
             reader.start();
 
-            System.out.println("Insert Lobby name");
             String lobby = stdIn.readLine();
             out.println(lobby);
 
@@ -49,6 +48,7 @@ class Writer extends Thread {
             out.println(login);
 
             while ((input = stdIn.readLine()) != null) {
+                if(socket.isClosed()) break; 
                 out.println("nome:" + login + ",messaggio:" + input);
             }
         } catch (IOException e) {
@@ -80,10 +80,10 @@ class Reader extends Thread {
                     if(parsedResponse[0].equals("lobby_names")){
                         String[] lobbyNames = parsedResponse[1].split(",");
 
-                        System.out.println("Lobby Names: "+ Arrays.toString(lobbyNames));
-                        for (String lobby : lobbyNames) {
-                            System.out.println(lobby);
-                        }
+                        System.out.println("Lobby Names: "+ Arrays.toString(lobbyNames).replaceAll("\\[|\\]", ""));
+                        System.out.println("Insert Lobby name");
+
+                       
                     } else if(parsedResponse[0].equals("code")){
                         if (parsedResponse[1].equals("200")) {
                             isInLobby = true;
@@ -91,7 +91,7 @@ class Reader extends Thread {
                         } else if (parsedResponse[1].equals("403")) {
                             System.out.println("Lobby isn't present in server list");
                             socket.close();
-                            Thread.currentThread().interrupt();
+                            interrupt();
                         }
                     }
                     
@@ -101,9 +101,9 @@ class Reader extends Thread {
                         isAuthed = true;
                         System.out.println("Connection successful");
                     } else if (parsedResponse[1].equals("403")) {
-                        System.out.println("Server Already has this name");
+                        System.out.println("Lobby Already has this name");
                         socket.close();
-                        Thread.currentThread().interrupt();
+                        interrupt();
                     }
                 } else {
                     String sender = response.split(",")[0].split(":")[1];
