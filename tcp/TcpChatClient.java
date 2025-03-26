@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 
-// TODO: CREATE LOGIC THAT HANDLES THE LOBBY ARRAY AND SENDS THE NAME
 public class TcpChatClient {
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 6969)) {
@@ -11,7 +11,7 @@ public class TcpChatClient {
 
             writer.start();
             while (socket.isConnected()) {
-                
+
             }
 
             writer.interrupt();
@@ -36,16 +36,20 @@ class Writer extends Thread {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             String input = "";
 
+            Reader reader = new Reader(socket);
+            reader.start();
+
+            System.out.println("Insert Lobby name");
+            String lobby = stdIn.readLine();
+            out.println(lobby);
+
             // send login
             System.out.println("Insert Login");
             String login = stdIn.readLine();
             out.println(login);
 
-            Reader reader = new Reader(socket);
-            reader.start();
-
-            while ((input = stdIn.readLine())!= null) {
-                out.println("nome:"+login+",messaggio:"+input);
+            while ((input = stdIn.readLine()) != null) {
+                out.println("nome:" + login + ",messaggio:" + input);
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -58,6 +62,7 @@ class Writer extends Thread {
 class Reader extends Thread {
     Socket socket;
     boolean isAuthed = false;
+    boolean isInLobby = false;
 
     Reader(Socket socket) {
         this.socket = socket;
@@ -70,13 +75,35 @@ class Reader extends Thread {
             String response;
             while (socket.isConnected()) {
                 response = in.readLine();
-                if(!isAuthed){
-                    if(response.equals("200")){
-                        isAuthed= true;
+                String[] parsedResponse = response.split(":");
+                if (!isInLobby) {
+                    if(parsedResponse[0].equals("lobby_names")){
+                        String[] lobbyNames = parsedResponse[1].split(",");
+
+                        System.out.println("Lobby Names: "+ Arrays.toString(lobbyNames));
+                        for (String lobby : lobbyNames) {
+                            System.out.println(lobby);
+                        }
+                    } else if(parsedResponse[0].equals("code")){
+                        if (parsedResponse[1].equals("200")) {
+                            isInLobby = true;
+                            System.out.println("Entered in lobby");
+                        } else if (parsedResponse[1].equals("403")) {
+                            System.out.println("Lobby isn't present in server list");
+                            socket.close();
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                    
+                   
+                } else if (!isAuthed) {
+                    if (parsedResponse[1].equals("200")) {
+                        isAuthed = true;
                         System.out.println("Connection successful");
-                    } else if (response.equals("403")){
+                    } else if (parsedResponse[1].equals("403")) {
                         System.out.println("Server Already has this name");
                         socket.close();
+                        Thread.currentThread().interrupt();
                     }
                 } else {
                     String sender = response.split(",")[0].split(":")[1];

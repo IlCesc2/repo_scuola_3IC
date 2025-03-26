@@ -18,13 +18,14 @@ public class MultiThreadServer {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Nuovo client connesso!");
 
-                new ClientHandler(clientSocket, clients, lobbies).start();
+                new ClientHandler(clientSocket, lobbies).start();
             }
         } catch (IOException e) {
             System.out.println("Errore: " + e.getMessage());
         }
     }
-    public static String[] lobbyList(ArrayList<Lobby> lobbies){
+
+    public static String[] lobbyList(ArrayList<Lobby> lobbies) {
         ArrayList<String> lobbyNames = new ArrayList<>();
         for (Lobby lobby : lobbies) {
             lobbyNames.add(lobby.getName());
@@ -34,69 +35,73 @@ public class MultiThreadServer {
 }
 
 class ClientHandler extends Thread {
-    private Socket clientSocket;
-    private boolean hasClientSelectedLobby;
-    private boolean isClientAuthed;
-    private HashMap<String, Socket> clients;
     private ArrayList<Lobby> lobbies;
+    private Socket clientSocket;
     private Lobby lobbySelected;
 
-    public ClientHandler(Socket socket, HashMap<String, Socket> clients, ArrayList<Lobby> lobbies) {
+    private boolean hasClientSelectedLobby;
+    private boolean isClientAuthed;
+
+    public ClientHandler(Socket socket,  ArrayList<Lobby> lobbies) {
         this.clientSocket = socket;
-        this.clients = clients;
-        this.lobbies= lobbies;
+        this.lobbies = lobbies;
     }
 
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-            
-                    String lobbieNames="";
-            for (Lobby lobby : lobbies) {
-                lobbieNames += lobby.getName()+",";
 
-            
+            String lobbyNames = "lobby_names:";
+            for (Lobby lobby : lobbies) {
+                lobbyNames += lobby.getName() + ",";
             }
-            out.println(lobbieNames);
+            out.println(lobbyNames);
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                if(!hasClientSelectedLobby){
-                    int i =0;
+                if (!hasClientSelectedLobby) {
+                    // LOBBY SELECTION
+                    int i = 0;
                     for (Lobby lobby : lobbies) {
                         if (lobby.getName().equals(inputLine)) {
                             lobbySelected = lobby;
-                            lobbySelected.addClient(clientSocket, inputLine);
-                            hasClientSelectedLobby= true;
-                            out.println("200");
+                            
+                            hasClientSelectedLobby = true;
+                            out.println("code:200");
                             break;
-                        } 
+                        }
                         i++;
                     }
-                    if (i< lobbies.size()){
-                        out.println("403");
+                    
+                    if (i < lobbies.size()) {
+                        System.out.println(i+" bro");
+                        out.println("code:403");
                     }
                 } else if (!isClientAuthed) {
-                    if (clients.get(inputLine) == null) {
+                    // LOGIN SELECTION
+                    System.out.println("BRO" + inputLine);
+                    if (lobbySelected.getClients().get(inputLine) == null) {
                         isClientAuthed = true;
-                        out.println("200");
-                        clients.put(inputLine, clientSocket);
-                        System.out.println(inputLine + "in");
+                        out.println("code:200");
+
+                        lobbySelected.addClient(clientSocket, inputLine);
+                        System.out.println(inputLine + " entered lobby "+ lobbySelected.getName());
                     } else {
-                        out.println("403");
+                        out.println("code:403");
                     }
                 } else {
-                    //System.out.println("Client: " + inputLine);
-                    //out.println("Echo: " + inputLine);
+                    // SENDING MESSAGES
 
-                    // TODO: Broadcast message to all clients 
                     String sender = inputLine.split(",")[0].split(":")[1];
                     String message = inputLine.split(",")[1].split(":")[1];
-                    System.out.println(sender+":"+message);
-                    for (String client : clients.keySet()) {
+                    System.out.println(sender + ":" + message);
+                    
+                    for (String client : lobbySelected.getClients().keySet()) {
+                        System.out.println(client);
                         if (!client.equals(sender)) {
                             String msg = "nome:" + sender + ",messaggio:" + message;
-                            PrintWriter clientOut = new PrintWriter(clients.get(client).getOutputStream(), true);
-                            
+                            System.out.println(msg);
+                            PrintWriter clientOut = new PrintWriter(lobbySelected.getClients().get(client).getOutputStream(), true);
+
                             clientOut.println(msg);
                         }
                     }
