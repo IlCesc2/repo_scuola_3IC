@@ -83,13 +83,14 @@ class Reader extends Thread {
                         System.out.println("Lobby Names: "+ Arrays.toString(lobbyNames).replaceAll("\\[|\\]", ""));
                         System.out.println("Insert Lobby name");
 
-                       
-                    } else if(parsedResponse[0].equals("code")){
-                        if (parsedResponse[1].equals("200")) {
+                    } else {
+                        if (parsedResponse[0].equals("200")) {
                             isInLobby = true;
-                            System.out.println("Entered in lobby");
-                        } else if (parsedResponse[1].equals("403")) {
-                            System.out.println("Lobby isn't present in server list");
+                            System.out.println(parsedResponse[1]);
+                            //System.out.println("Entered in lobby");
+                        } else if (parsedResponse[0].equals("403")) {
+                            System.out.println(parsedResponse[1]);
+                            //System.out.println("Lobby isn't present in server list");
                             socket.close();
                             interrupt();
                         }
@@ -97,11 +98,14 @@ class Reader extends Thread {
                     
                    
                 } else if (!isAuthed) {
-                    if (parsedResponse[1].equals("200")) {
+                    if (parsedResponse[0].equals("200")) {
                         isAuthed = true;
-                        System.out.println("Connection successful");
-                    } else if (parsedResponse[1].equals("403")) {
-                        System.out.println("Lobby Already has this name");
+                        System.out.println(parsedResponse[1]);
+                        //System.out.println("Connection successful");
+                    } else if (parsedResponse[0].equals("403")) {
+                        System.out.println(parsedResponse[1]);
+
+                        //System.out.println("Lobby Already has this name");
                         socket.close();
                         interrupt();
                     }

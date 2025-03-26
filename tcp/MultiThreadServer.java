@@ -1,16 +1,15 @@
 import java.io.*;
 import java.net.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MultiThreadServer {
     public static void main(String[] args) {
         int PORT = 6969;
-        HashMap<String, Socket> clients = new HashMap<>();
         ArrayList<Lobby> lobbies = new ArrayList<>();
-        lobbies.add(new Lobby("a"));
-        lobbies.add(new Lobby("b"));
-        lobbies.add(new Lobby("c"));
+        lobbies.add(new Lobby("alpha"));
+        lobbies.add(new Lobby("beta"));
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server di chat multi-thread in ascolto sulla porta " + PORT + "...");
@@ -35,6 +34,8 @@ public class MultiThreadServer {
 }
 
 class ClientHandler extends Thread {
+    static String LOG_FILE_PATH = "log.txt";
+
     private ArrayList<Lobby> lobbies;
     private Socket clientSocket;
     private Lobby lobbySelected;
@@ -42,7 +43,7 @@ class ClientHandler extends Thread {
     private boolean hasClientSelectedLobby;
     private boolean isClientAuthed;
 
-    public ClientHandler(Socket socket,  ArrayList<Lobby> lobbies) {
+    public ClientHandler(Socket socket, ArrayList<Lobby> lobbies) {
         this.clientSocket = socket;
         this.lobbies = lobbies;
     }
@@ -64,27 +65,27 @@ class ClientHandler extends Thread {
                     for (Lobby lobby : lobbies) {
                         if (lobby.getName().equals(inputLine)) {
                             lobbySelected = lobby;
-                            
+
                             hasClientSelectedLobby = true;
-                            out.println("code:200");
+                            out.println("200: lobby disponibile");
                             break;
                         }
                         i++;
                     }
-                    
+
                     if (i == lobbies.size()) {
-                        out.println("code:403");
+                        out.println("403: lobby non esistente");
                     }
                 } else if (!isClientAuthed) {
                     // LOGIN SELECTION
                     if (lobbySelected.getClients().get(inputLine) == null) {
                         isClientAuthed = true;
-                        out.println("code:200");
+                        out.println("200: nome disponibile");
 
                         lobbySelected.addClient(clientSocket, inputLine);
-                        System.out.println(inputLine + " entered lobby "+ lobbySelected.getName());
+                        System.out.println(inputLine + " entered lobby " + lobbySelected.getName());
                     } else {
-                        out.println("code:403");
+                        out.println("403: nome non disponibile");
                     }
                 } else {
                     // SENDING MESSAGES
@@ -92,15 +93,18 @@ class ClientHandler extends Thread {
                     String sender = inputLine.split(",")[0].split(":")[1];
                     String message = inputLine.split(",")[1].split(":")[1];
                     System.out.println(sender + ":" + message);
-                    
+                    String msg = "nome:" + sender + ",messaggio:" + message;
+                    writeToLog("From lobby " + lobbySelected.getName() + msg);
+
                     for (String client : lobbySelected.getClients().keySet()) {
                         System.out.println(client);
                         if (!client.equals(sender)) {
-                            String msg = "nome:" + sender + ",messaggio:" + message;
-                            System.out.println(msg);
-                            PrintWriter clientOut = new PrintWriter(lobbySelected.getClients().get(client).getOutputStream(), true);
 
+                            System.out.println(msg);
+                            PrintWriter clientOut = new PrintWriter(
+                                    lobbySelected.getClients().get(client).getOutputStream(), true);
                             clientOut.println(msg);
+
                         }
                     }
                 }
@@ -108,6 +112,19 @@ class ClientHandler extends Thread {
             }
         } catch (IOException e) {
             System.out.println("Errore di connessione con il client: " + e.getMessage());
+        }
+    }
+
+    public static void writeToLog(String message) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(LOG_FILE_PATH, true))) {
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String timestamp = now.format(formatter);
+
+            writer.println(timestamp + " - " + message);
+        } catch (IOException e) {
+            System.err.println("Error writing to log file: " + e.getMessage());
         }
     }
 }
