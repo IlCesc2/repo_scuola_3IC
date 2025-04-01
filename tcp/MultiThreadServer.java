@@ -8,7 +8,7 @@ public class MultiThreadServer {
     public static void main(String[] args) {
         int PORT = 6969;
         ArrayList<Lobby> lobbies = new ArrayList<>();
-        lobbies.add(new Lobby("alpha"));
+        lobbies.add(new Lobby("alpha", "1234"));
         lobbies.add(new Lobby("beta"));
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -34,7 +34,7 @@ public class MultiThreadServer {
 }
 
 class ClientHandler extends Thread {
-    static String LOG_FILE_PATH = "log.txt";
+    static String LOG_FILE_PATH = "tcp/log.txt";
 
     private ArrayList<Lobby> lobbies;
     private Socket clientSocket;
@@ -65,9 +65,7 @@ class ClientHandler extends Thread {
                     for (Lobby lobby : lobbies) {
                         if (lobby.getName().equals(inputLine)) {
                             lobbySelected = lobby;
-
                             hasClientSelectedLobby = true;
-                            out.println("200: lobby disponibile");
                             break;
                         }
                         i++;
@@ -75,7 +73,13 @@ class ClientHandler extends Thread {
 
                     if (i == lobbies.size()) {
                         out.println("403: lobby non esistente");
+                    } else if (lobbySelected.hasPassword()) {
+                        out.println("104: lobby disponibile con password");
+
+                    } else {
+                        out.println("200: lobby disponibile");
                     }
+
                 } else if (!isClientAuthed) {
                     // LOGIN SELECTION
                     if (lobbySelected.getClients().get(inputLine) == null) {
@@ -97,14 +101,10 @@ class ClientHandler extends Thread {
                     writeToLog("From lobby " + lobbySelected.getName() + msg);
 
                     for (String client : lobbySelected.getClients().keySet()) {
-                        System.out.println(client);
                         if (!client.equals(sender)) {
-
-                            System.out.println(msg);
                             PrintWriter clientOut = new PrintWriter(
                                     lobbySelected.getClients().get(client).getOutputStream(), true);
                             clientOut.println(msg);
-
                         }
                     }
                 }

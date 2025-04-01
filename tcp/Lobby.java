@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class Lobby {
     private String name;
-    private String password;
+    private String password="";
     private HashMap<String, Socket> clients = new HashMap<>();
 
     public Lobby(String name, String password) {
@@ -19,6 +19,10 @@ public class Lobby {
     }
     public String getPassword() {
         return password;
+    }
+    public boolean hasPassword(){
+        System.out.println(password);
+        return !password.equals("");
     }
     public HashMap<String, Socket> getClients() {
         return clients;

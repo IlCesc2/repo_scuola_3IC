@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 
+// 
+
 public class TcpChatClient {
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 6969)) {
@@ -23,7 +25,7 @@ public class TcpChatClient {
 }
 
 class Writer extends Thread {
-    Socket socket;
+    private final Socket socket;
 
     Writer(Socket socket) {
         this.socket = socket;
@@ -31,31 +33,46 @@ class Writer extends Thread {
 
     @Override
     public void run() {
-        try {
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            String input = "";
-
+        try (
+                BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
             Reader reader = new Reader(socket);
             reader.start();
 
+            // lobby
             String lobby = stdIn.readLine();
             out.println(lobby);
 
-            // send login
+            // pw
+            while (!reader.isInLobby) {
+                if (reader.needsPassword) {
+                    System.out.print("Insert Password: ");
+                    String password = stdIn.readLine();
+                    out.println(password);
+                    reader.needsPassword = false;
+                }
+
+            }
+
+            // login
             System.out.println("Insert Login");
             String login = stdIn.readLine();
             out.println(login);
 
+            // messages
+            String input;
             while ((input = stdIn.readLine()) != null) {
-                if(socket.isClosed()) break; 
-                out.println("nome:" + login + ",messaggio:" + input);
+                if (socket.isClosed())
+                    break;
+                if (!input.trim().isEmpty()) {
+                    System.out.println(login + ":" + input);
+                    out.println("nome:" + login + ",messaggio:" + input);
+                }
             }
+
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 }
 
@@ -63,6 +80,7 @@ class Reader extends Thread {
     Socket socket;
     boolean isAuthed = false;
     boolean isInLobby = false;
+    boolean needsPassword = false;
 
     Reader(Socket socket) {
         this.socket = socket;
@@ -72,40 +90,43 @@ class Reader extends Thread {
     public void run() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
             String response;
             while (socket.isConnected()) {
                 response = in.readLine();
                 String[] parsedResponse = response.split(":");
                 if (!isInLobby) {
-                    if(parsedResponse[0].equals("lobby_names")){
+                    if (parsedResponse[0].equals("lobby_names")) {
                         String[] lobbyNames = parsedResponse[1].split(",");
 
-                        System.out.println("Lobby Names: "+ Arrays.toString(lobbyNames).replaceAll("\\[|\\]", ""));
+                        System.out.println("Lobby Names: " + Arrays.toString(lobbyNames).replaceAll("\\[|\\]", ""));
                         System.out.println("Insert Lobby name");
 
                     } else {
-                        if (parsedResponse[0].equals("200")) {
-                            isInLobby = true;
+                        if (parsedResponse[0].equals("403")) {
                             System.out.println(parsedResponse[1]);
-                            //System.out.println("Entered in lobby");
-                        } else if (parsedResponse[0].equals("403")) {
-                            System.out.println(parsedResponse[1]);
-                            //System.out.println("Lobby isn't present in server list");
                             socket.close();
                             interrupt();
+                        } else if (parsedResponse[0].equals("104")) {
+                            System.out.println("Inserire Password:");
+                            needsPassword = true;
+                        } else if (parsedResponse[0].equals("200")) {
+                            isInLobby = true;
+                            System.out.println(parsedResponse[1]);
+                        } else {
+                            System.out.println("Something went wrong");
                         }
                     }
-                    
-                   
+
                 } else if (!isAuthed) {
                     if (parsedResponse[0].equals("200")) {
                         isAuthed = true;
                         System.out.println(parsedResponse[1]);
-                        //System.out.println("Connection successful");
+                        // System.out.println("Connection successful");
                     } else if (parsedResponse[0].equals("403")) {
                         System.out.println(parsedResponse[1]);
 
-                        //System.out.println("Lobby Already has this name");
+                        // System.out.println("Lobby Already has this name");
                         socket.close();
                         interrupt();
                     }
