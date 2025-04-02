@@ -12,12 +12,16 @@ public class TcpChatClient {
             Writer writer = new Writer(socket);
 
             writer.start();
+
+            Listener listener = new Listener(socket);
+
+            listener.start();
+            
             while (socket.isConnected()) {
-
+                
             }
-
             writer.interrupt();
-            System.out.println("out bro");
+
         } catch (IOException e) {
             System.out.println("Errore: " + e.getMessage());
         }
@@ -48,14 +52,14 @@ class Writer extends Thread {
                 if (reader.needsPassword) {
                     System.out.print("Insert Password: ");
                     String password = stdIn.readLine();
-                    out.println(password);
+                    out.println("password:"+ password);
                     reader.needsPassword = false;
                 }
 
             }
 
             // login
-            System.out.println("Insert Login");
+            System.out.print("Insert Login: ");
             String login = stdIn.readLine();
             out.println(login);
 
@@ -81,6 +85,7 @@ class Reader extends Thread {
     boolean isAuthed = false;
     boolean isInLobby = false;
     boolean needsPassword = false;
+    boolean hasGuessedPassword = true;
 
     Reader(Socket socket) {
         this.socket = socket;
@@ -96,20 +101,23 @@ class Reader extends Thread {
                 response = in.readLine();
                 String[] parsedResponse = response.split(":");
                 if (!isInLobby) {
-                    if (parsedResponse[0].equals("lobby_names")) {
+                    if (parsedResponse[0].equals("lobby_names")) { // SHOWS LOBBY NAMES 
                         String[] lobbyNames = parsedResponse[1].split(",");
 
                         System.out.println("Lobby Names: " + Arrays.toString(lobbyNames).replaceAll("\\[|\\]", ""));
-                        System.out.println("Insert Lobby name");
 
-                    } else {
+                        System.out.print("Insert Lobby name: ");
+
+                    } else { // IS LOBBY IN SERVER
                         if (parsedResponse[0].equals("403")) {
                             System.out.println(parsedResponse[1]);
                             socket.close();
                             interrupt();
                         } else if (parsedResponse[0].equals("104")) {
-                            System.out.println("Inserire Password:");
                             needsPassword = true;
+                            hasGuessedPassword=false;
+                            System.out.println(parsedResponse[1]);
+
                         } else if (parsedResponse[0].equals("200")) {
                             isInLobby = true;
                             System.out.println(parsedResponse[1]);
@@ -118,19 +126,30 @@ class Reader extends Thread {
                         }
                     }
 
-                } else if (!isAuthed) {
+                } else if (!hasGuessedPassword){ // PASSWORD
+                    if (parsedResponse[0].equals("403")) {
+                        System.out.println(parsedResponse[1]);
+                        socket.close();
+                        interrupt();
+                    } else if (parsedResponse[0].equals("200")) {
+                        hasGuessedPassword = true;
+                        System.out.println(parsedResponse[1]);
+                    } else {
+                        System.out.println("Something went wrong");
+                    }
+                } else if (!isAuthed) { // LOGIN AUTH
                     if (parsedResponse[0].equals("200")) {
                         isAuthed = true;
                         System.out.println(parsedResponse[1]);
-                        // System.out.println("Connection successful");
                     } else if (parsedResponse[0].equals("403")) {
                         System.out.println(parsedResponse[1]);
 
-                        // System.out.println("Lobby Already has this name");
                         socket.close();
                         interrupt();
                     }
-                } else {
+                } 
+                else { // READING MESSAGES ARRIVING FROM SERVER
+                    System.out.println("e");
                     String sender = response.split(",")[0].split(":")[1];
                     String message = response.split(",")[1].split(":")[1];
                     System.out.println(sender + ": " + message);
@@ -138,6 +157,29 @@ class Reader extends Thread {
             }
         } catch (Exception e) {
             // TODO: handle exception
+        }
+    }
+}
+
+class Listener extends Thread{
+    Socket socket;
+
+    Listener(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run(){
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            String r;
+            while ((r = in.readLine()) != null){
+                System.out.println(r);
+            }
+        }
+        catch(Exception e){
+
         }
     }
 }

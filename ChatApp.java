@@ -68,6 +68,6 @@ public class ChatApp extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatApp::new);
+        //SwingUtilities.invokeLater(ChatApp::new);
     }
 }

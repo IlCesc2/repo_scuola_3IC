@@ -1,6 +1,9 @@
 import java.io.*;
 import java.net.*;
 
+import t.Reader;
+import t.Writer;
+
 public class TcpChatClient {
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 6969)) {

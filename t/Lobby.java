@@ -21,7 +21,6 @@ public class Lobby {
         return password;
     }
     public boolean hasPassword(){
-        System.out.println(password);
         return !password.equals("");
     }
     public HashMap<String, Socket> getClients() {
