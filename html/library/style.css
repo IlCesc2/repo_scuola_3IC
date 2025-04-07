@@ -1,0 +1,44 @@
+main{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+.title{
+    animation-name: slideFromTop;
+    animation-duration: 0.7s;
+}
+.down {
+    opacity: 0;
+    animation-name: slideFromBottom;
+    animation-delay: 0.7s;
+    animation-duration: 0.7s;
+    animation-fill-mode: forwards
+}
+
+#results{
+    display: grid;
+    grid-template-columns: 4;
+}
+
+@keyframes slideFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+@keyframes slideFromBottom {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
