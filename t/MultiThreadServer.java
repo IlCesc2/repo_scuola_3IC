@@ -9,8 +9,8 @@ public class MultiThreadServer {
         int PORT = 6969;
         ArrayList<Lobby> lobbies = new ArrayList<>();
         ArrayList<Socket> r = new ArrayList<>();
-        lobbies.add(new Lobby("alpha", "1234"));
-        lobbies.add(new Lobby("beta"));
+        lobbies.add(new Lobby("a", "1"));
+        lobbies.add(new Lobby("b"));
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server di chat multi-thread in ascolto sulla porta " + PORT + "...");
@@ -116,10 +116,11 @@ class ClientHandler extends Thread {
                     String msg = "nome:" + sender + ",messaggio:" + message;
                     writeToLog("From lobby " + lobbySelected.getName() +" "+ msg);
 
-                    for (Socket client : r) {
-                        System.out.println("C: "+ client +", S: "+ sender);
-                        PrintWriter p = new PrintWriter(client.getOutputStream(), true);
-                        p.println(message);
+                    for (String userLobbyName : lobbySelected.getClients().keySet()) {
+                        
+                        if(userLobbyName.equals(sender)) continue;
+                        PrintWriter p = new PrintWriter(lobbySelected.getClients().get(userLobbyName).getOutputStream(), true);
+                        p.println(msg);
                     }
                 }
 
