@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.*;
 import java.util.Arrays;
@@ -7,12 +9,14 @@ public class TcpChatClient {
         try (Socket socket = new Socket("localhost", 6969)) {
             System.out.println("Connesso al server di chat!");
 
-            Writer writer = new Writer(socket);
+            ChatApp chatApp = new ChatApp();
+
+            Writer writer = new Writer(socket, chatApp);
             writer.start();
 
-            while (socket.isConnected() && writer.isAlive()) {
-                Thread.sleep(100); // Keeps main thread alive
-            }
+            while (socket.isConnected() && writer.isAlive()) {   }
+            chatApp.sendMessage("Chat is Closed :(");
+            
 
         } catch (Exception e) {
             System.out.println("Errore: " + e.getMessage());
@@ -21,15 +25,18 @@ public class TcpChatClient {
 }
 
 class Writer extends Thread {
-    private final Socket socket;
+    private Socket socket;
+    private ChatApp chatApp;
 
     boolean isAuthed = false;
     boolean isInLobby = false;
     boolean needsPassword = false;
     boolean hasGuessedPassword = true;
+    String login;
 
-    Writer(Socket socket) {
+    Writer(Socket socket, ChatApp chatApp) {
         this.socket = socket;
+        this.chatApp= chatApp;
     }
 
     @Override
@@ -39,22 +46,42 @@ class Writer extends Thread {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
+
+            chatApp.sendButton.addActionListener(new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String message = chatApp.inputField.getText().trim();
+
+                    if(message.isEmpty()) return;
+                
+                    if(!isInLobby){
+                        out.println(message);
+                    } else if(needsPassword && !hasGuessedPassword){
+                        out.println("password:" + message);
+                    } else if(!isAuthed){
+                        login= message;
+                        out.println(message);
+                    } else{
+                        out.println("nome:" + login + ",messaggio:" + message);
+                        chatApp.sendMessage("You: " + chatApp.inputField.getText().trim());
+                    }
+
+                }
+            });
+            
             // LOBBY
             while (!isInLobby) {
                 String response = in.readLine();
                 if (response == null) break;
 
                 String[] parsedResponse = response.split(":");
-
+                
                 if (parsedResponse[0].equals("lobby_names")) {
                     String[] lobbyNames = parsedResponse[1].split(",");
-                    System.out.println("Lobby Names: " + Arrays.toString(lobbyNames).replaceAll("[\\[\\]]", ""));
-                    System.out.print("Insert Lobby name: ");
-                    String lobby = stdIn.readLine();
-                    out.println(lobby);
-
+                    chatApp.sendMessage("Lobby Names: " + Arrays.toString(lobbyNames).replaceAll("[\\[\\]]", ""));
                 } else if (parsedResponse[0].equals("403")) {
-                    System.out.println(parsedResponse[1]);
+                    chatApp.sendMessage(parsedResponse[1]);
                     // socket.close();
                     // interrupt();
                     // return;
@@ -63,88 +90,86 @@ class Writer extends Thread {
                     needsPassword = true;
                     hasGuessedPassword = false;
                     isInLobby = true;
-                    System.out.println(parsedResponse[1]);
+                    chatApp.sendMessage(parsedResponse[1]);
 
                 } else if (parsedResponse[0].equals("200")) {
                     isInLobby = true;
-                    System.out.println(parsedResponse[1]);
+                    chatApp.sendMessage(parsedResponse[1]);
 
-                } else {
-                    System.out.println("Unknown lobby response: " + response);
+                } else{
+
+                    chatApp.sendMessage("Insert Lobby name: ");
                 }
+
             }
 
             // PASSWORD
             while (needsPassword && !hasGuessedPassword) {
-                System.out.print("Insert Password: ");
-                String password = stdIn.readLine();
-                out.println("password:" + password);
+                 chatApp.sendMessage("Insert Password: ");
+
 
                 String response = in.readLine();
                 if (response == null) break;
 
                 String[] parsedResponse = response.split(":");
                 if (parsedResponse[0].equals("403")) {
-                    System.out.println(parsedResponse[1]);
+                    chatApp.sendMessage(parsedResponse[1]);
                     // socket.close();
                     // interrupt();
                     // return;
                 } else if (parsedResponse[0].equals("200")) {
                     hasGuessedPassword = true;
-                    System.out.println(parsedResponse[1]);
+                    needsPassword = false;
+                    chatApp.sendMessage(parsedResponse[1]);
                 } else {
-                    System.out.println("Unexpected password response: " + response);
+                    chatApp.sendMessage("Unexpected password response: " + response);
                 }
 
-                needsPassword = false;
+                
             }
 
             // LOGIN 
-            System.out.print("Insert Login: ");
-            String login = stdIn.readLine();
-            out.println(login);
 
             while (!isAuthed) {
+                chatApp.sendMessage("Insert Login: ");
                 String response = in.readLine();
                 if (response == null) break;
 
                 String[] parsedResponse = response.split(":");
                 if (parsedResponse[0].equals("200")) {
                     isAuthed = true;
-                    System.out.println(parsedResponse[1]);
+                    chatApp.sendMessage(parsedResponse[1]);
+                    
+
                 } else if (parsedResponse[0].equals("403")) {
-                    System.out.println(parsedResponse[1]);
+                    
+                    chatApp.sendMessage(parsedResponse[1]);
                     // socket.close();
                     // interrupt();
                     // return;
                 } else {
-                    System.out.println("Login error: " + response);
+                    chatApp.sendMessage("Login error: " + response);
                 }
             }
 
             // MESSAGE SENDING
-            Reader reader = new Reader(socket);
+            Reader reader = new Reader(socket,chatApp);
             reader.start();
-
-            String input;
-            while ((input = stdIn.readLine()) != null) {
-                if (socket.isClosed()) break;
-                if (!input.trim().isEmpty()) {
-                    out.println("nome:" + login + ",messaggio:" + input);
-                }
-            }
+            while (socket.isConnected()) {   } // else the writer closes
 
         } catch (IOException e) {
-            System.out.println("Connection error: " + e.getMessage());
+            chatApp.sendMessage("Connection error: " + e.getMessage());
         }
     }
 }
 
 class Reader extends Thread {
-    private final Socket socket;
+    private Socket socket;
+    private ChatApp chatApp;
 
-    Reader(Socket socket) {
+    Reader(Socket socket, ChatApp chatApp) {
         this.socket = socket;
+        this.chatApp=chatApp;
     }
 
     @Override
@@ -154,22 +179,21 @@ class Reader extends Thread {
         ) {
             String response;
             while ((response = in.readLine()) != null) {
-                System.out.println("Response: "+ response);
                 if (response.contains(",") && response.contains("nome:") && response.contains("messaggio:")) {
                     try {
                         String[] parts = response.split(",");
                         String sender = parts[0].split(":")[1];
                         String message = parts[1].split(":")[1];
-                        System.out.println(sender + ": " + message);
+                        chatApp.sendMessage(sender + ": " + message);
                     } catch (Exception e) {
-                        System.out.println("Something wrong happened " + response);
+                        chatApp.sendMessage("Something wrong happened " + response);
                     }
                 } else {
-                    System.out.println("Server: " + response);
+                    chatApp.sendMessage("Server: " + response);
                 }
             }
         } catch (IOException e) {
-            System.out.println("Disconnected from server.");
+            chatApp.sendMessage("Disconnected from server.");
         }
     }
 }
