@@ -55,20 +55,43 @@ class Writer extends Thread {
 
                     if(message.isEmpty()) return;
                 
-                    if(!isInLobby){
+                    if(!isAuthed) {
+                        login= message;
+                        out.println(message);
+                    } else if(!isInLobby){
                         out.println(message);
                     } else if(needsPassword && !hasGuessedPassword){
                         out.println("password:" + message);
-                    } else if(!isAuthed){
-                        login= message;
-                        out.println(message);
-                    } else{
+                    }  else{
                         out.println("nome:" + login + ",messaggio:" + message);
                         chatApp.sendMessage("You: " + chatApp.inputField.getText().trim());
                     }
 
                 }
             });
+
+
+            // LOGIN 
+            while (!isAuthed) {
+                chatApp.sendMessage("Insert Login: ");
+                String response = in.readLine();
+                if (response == null) break;
+
+                String[] parsedResponse = response.split(":");
+                if (parsedResponse[0].equals("200")) {
+                    isAuthed = true;
+                    chatApp.sendMessage(parsedResponse[1]);
+                    
+
+                } else if (parsedResponse[0].equals("403")) {
+                    
+                    chatApp.sendMessage(parsedResponse[1]);
+       
+                } else {
+                    chatApp.sendMessage("Login error: " + response);
+                }
+            }
+
             
             // LOBBY
             while (!isInLobby) {
@@ -128,30 +151,7 @@ class Writer extends Thread {
                 
             }
 
-            // LOGIN 
-
-            while (!isAuthed) {
-                chatApp.sendMessage("Insert Login: ");
-                String response = in.readLine();
-                if (response == null) break;
-
-                String[] parsedResponse = response.split(":");
-                if (parsedResponse[0].equals("200")) {
-                    isAuthed = true;
-                    chatApp.sendMessage(parsedResponse[1]);
-                    
-
-                } else if (parsedResponse[0].equals("403")) {
-                    
-                    chatApp.sendMessage(parsedResponse[1]);
-                    // socket.close();
-                    // interrupt();
-                    // return;
-                } else {
-                    chatApp.sendMessage("Login error: " + response);
-                }
-            }
-
+            
             // MESSAGE SENDING
             Reader reader = new Reader(socket,chatApp);
             reader.start();
