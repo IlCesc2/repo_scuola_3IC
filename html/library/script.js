@@ -12,18 +12,28 @@ async function onInputValueChange(){
         refreshResults()
         document.getElementById("loading").style.display="none"
     })
-   
+}
+
+async function fetchBooksByCategory(category){
+    results=[]
+    document.getElementById("loading").style.display= "inline"
+    const url =`https://openlibrary.org/search.json?subject=${category}` // "https://openlibrary.org/search.json?q=bible"    
+    await fetch(url).then(async (res)=>{
+        const data = await res.json()
+        results= data.docs
+        refreshResults()
+        document.getElementById("loading").style.display="none"
+    })
 }
 
 
 function refreshResults(){
-
     const res = document.getElementById("results")
     res.textContent=""
 
     results.forEach((r)=>{
-        console.log(r)
-        const newBook = document.createElement("div")
+        const newBook = document.createElement("a")
+        newBook.href = "detail.html?cover_i="+ r.key
         newBook.classList.add("book")
         const title = document.createElement("h2")
         const img = document.createElement("img")
@@ -35,6 +45,6 @@ function refreshResults(){
         res.appendChild(newBook)
     })
 }
+
 document.querySelector("input").addEventListener("input",(e)=> onInputValueChange())
 
-//onInputValueChange()
