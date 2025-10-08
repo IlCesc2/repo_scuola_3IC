@@ -7,8 +7,8 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
-        Relation persone1 = new Relation("persone.csv");
-        Relation persone2 = new Relation("persone2.csv");
+        Relation persone1 = new Relation("5IC/es/persone.csv");
+        Relation persone2 = new Relation("5IC/es/persone2.csv");
 
         System.out.println("TABLE 1 -------------------");
         persone1.printTable();
@@ -111,8 +111,7 @@ public class Main {
     public static void removeRowDuplicates(Relation input) { // idk
 
         for (int i = 0; i < input.rows.size(); i++) {
-            for (int j = 0; j < input.rows.size(); j++) {
-                if(i==j) continue;
+            for (int j = i+1; j < input.rows.size(); j++) {
                 if(checkEquality(input.rows.get(i).values, input.rows.get(j).values)){
                     input.rows.remove(input.rows.get(j));
                 }
@@ -121,14 +120,7 @@ public class Main {
     }
 
     public static boolean checkEquality(ArrayList<String> a1, ArrayList<String> a2) {
-        if (a1.size() != a2.size())
-            return false;
-
-        for (int i = 0; i < a1.size(); i++) {
-            if (!(a1.get(i).equals(a2.get(i))))
-                return false;
-        }
-        return true;
+        return Arrays.equals(a1.toArray(), a2.toArray());
     }
 
     /*
