@@ -19,21 +19,24 @@ public class Relation {
     Relation(String csvfile) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvfile))) {
             String line;
-
+            int i =0; 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (header.isEmpty()) {
-                    header.add(values[0]);
-                    header.add(values[1]);
-                    header.add(values[2]);
-                } else {
-
-                    Row newRow = new Row();
-                    newRow.values.add(values[0]);
-                    newRow.values.add(values[1]);
-                    newRow.values.add(values[2]);
-                    rows.add(newRow);
+                for (String val : values) {
+                    
+                    if (i==0) {
+                        header.add(values[0]);
+                        header.add(values[1]);
+                        header.add(values[2]);
+                    } else {
+                        Row newRow = new Row();
+                        newRow.values.add(values[0]);
+                        newRow.values.add(values[1]);
+                        newRow.values.add(values[2]);
+                        rows.add(newRow);
+                    }
                 }
+                i++;
             }
         } catch (Exception e) {
             e.printStackTrace();
