@@ -22,20 +22,17 @@ public class Relation {
             int i =0; 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
+                Row newRow = new Row();
+
                 for (String val : values) {
-                    
                     if (i==0) {
-                        header.add(values[0]);
-                        header.add(values[1]);
-                        header.add(values[2]);
+                        header.add(val);
                     } else {
-                        Row newRow = new Row();
-                        newRow.values.add(values[0]);
-                        newRow.values.add(values[1]);
-                        newRow.values.add(values[2]);
-                        rows.add(newRow);
+                        newRow.values.add(val);
                     }
                 }
+                if (i>0) rows.add(newRow);
+
                 i++;
             }
         } catch (Exception e) {
