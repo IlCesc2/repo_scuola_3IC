@@ -16,89 +16,135 @@ public class Main {
         /*
          * 
          * 
-         //Visualizzare il totale per tutti gli ordini
- 
-         //Visualizzare il totale per tutti gli ordini
-         int totOrders = 0;
-         HashMap<String, Integer> totalPerOrder = new HashMap<>();
- 
-         for (Row o: orders.rows) {
-             String id_prodotto = o.values.get(2);
-             Integer qt = Integer.parseInt(o.values.get(2));
- 
-             Relation product = selection(products, "id_prodotto", id_prodotto);
-             Integer prezzoProdotto= Integer.parseInt(product.rows.get(0).values.get(2));
- 
-             totOrders+=prezzoProdotto*qt;
-             // total per order
-             String id_order = o.values.get(2);
-             totalPerOrder.put(id_order, prezzoProdotto*qt);
- 
-         }
-               
-         // getting the most expensive item
-         int maxIndex =0;
-         for (int i = 1; i < products.rows.size(); i++) {
-             Integer maxPrice = Integer.parseInt(products.rows.get(maxIndex).values.get(3));
-             Integer currentPrice = Integer.parseInt(products.rows.get(i).values.get(3));
- 
-             if (currentPrice>maxPrice) maxIndex=i;
-         }
- 
-         String maxProductId = products.rows.get(maxIndex).values.get(0);
-         
-         ArrayList<String> id_utente = new ArrayList<>();
- 
-         for (int i = 0; i < orders.rows.size(); i++) {
-             String curProductId = orders.rows.get(i).values.get(2);
-             String curUserId = orders.rows.get(i).values.get(2);
-             if(curProductId.equals(maxProductId)){
-                 id_utente.add(curUserId);
-             }
-         }
-         
-         ArrayList<Row> out = new ArrayList<>();
-         for (String id : id_utente) {
-             Relation r = selection(ppl, "id", id);
-             out.addAll(r.rows);
-         }
- 
-         // OUT
-         System.out.println("Total prices: "+totOrders);
-         System.out.println("Total per order:");
-         for (String key : totalPerOrder.keySet()) {
-             System.out.println(key + ": "+ totalPerOrder.get(key));
-         }
- 
-         System.out.println("Users that bought the most expensive product: ");
-         for (Row row : out) {
-             row.printRow();
-         }
+         * //Visualizzare il totale per tutti gli ordini
+         * 
+         * //Visualizzare il totale per tutti gli ordini
+         * int totOrders = 0;
+         * HashMap<String, Integer> totalPerOrder = new HashMap<>();
+         * 
+         * for (Row o: orders.rows) {
+         * String id_prodotto = o.values.get(2);
+         * Integer qt = Integer.parseInt(o.values.get(2));
+         * 
+         * Relation product = selection(products, "id_prodotto", id_prodotto);
+         * Integer prezzoProdotto= Integer.parseInt(product.rows.get(0).values.get(2));
+         * 
+         * totOrders+=prezzoProdotto*qt;
+         * // total per order
+         * String id_order = o.values.get(2);
+         * totalPerOrder.put(id_order, prezzoProdotto*qt);
+         * 
+         * }
+         * 
+         * // getting the most expensive item
+         * int maxIndex =0;
+         * for (int i = 1; i < products.rows.size(); i++) {
+         * Integer maxPrice =
+         * Integer.parseInt(products.rows.get(maxIndex).values.get(3));
+         * Integer currentPrice = Integer.parseInt(products.rows.get(i).values.get(3));
+         * 
+         * if (currentPrice>maxPrice) maxIndex=i;
+         * }
+         * 
+         * String maxProductId = products.rows.get(maxIndex).values.get(0);
+         * 
+         * ArrayList<String> id_utente = new ArrayList<>();
+         * 
+         * for (int i = 0; i < orders.rows.size(); i++) {
+         * String curProductId = orders.rows.get(i).values.get(2);
+         * String curUserId = orders.rows.get(i).values.get(2);
+         * if(curProductId.equals(maxProductId)){
+         * id_utente.add(curUserId);
+         * }
+         * }
+         * 
+         * ArrayList<Row> out = new ArrayList<>();
+         * for (String id : id_utente) {
+         * Relation r = selection(ppl, "id", id);
+         * out.addAll(r.rows);
+         * }
+         * 
+         * // OUT
+         * System.out.println("Total prices: "+totOrders);
+         * System.out.println("Total per order:");
+         * for (String key : totalPerOrder.keySet()) {
+         * System.out.println(key + ": "+ totalPerOrder.get(key));
+         * }
+         * 
+         * System.out.println("Users that bought the most expensive product: ");
+         * for (Row row : out) {
+         * row.printRow();
+         * }
          */
 
+        Relation ordini = new Relation("5IC/es/ordini.csv");
+        Relation prodotti = new Relation("5IC/es/prodotti.csv");
+        Relation persone = new Relation("5IC/es/persone.csv");
 
-        Relation persone1 = new Relation("5IC/es/persone.csv");
-        Relation persone2 = new Relation("5IC/es/persone2.csv");
-        
-        System.out.println("TABLE 1 -------------------");
-        persone1.printTable();
-        System.out.println("TABLE 2 -------------------");
-        persone2.printTable();
-        // selection(persone1, "nome", "Giovanni").printTable();
-        ArrayList<String> filter = new ArrayList<>();
-        filter.add("id");
-        filter.add("nome");
-        filter.add("cognome");
-        // projection2(persone1, filter).printTable();
+        System.out.println("ORDINI -------------------");
+        ordini.printTable();
+        System.out.println("PRODOTTI -------------------");
+        prodotti.printTable();
+        System.out.println("PERSONE -------------------");
+        persone.printTable();
 
-        
-        System.out.println("CARTESIANO -------------------");
-        prodCartesiano(persone1, persone2).printTable();
-     
+        String[] filter = { "id_prodotto" };
+
+        Relation a = join(ordini, prodotti, filter);
+
+        HashMap<String, Integer> orderTotal = new HashMap<>();
+        int idProd = a.header.indexOf("id_prodotto");
+        int idQt = a.header.indexOf("qty");
+        int idPrezzo = a.header.indexOf("prezzo_unitario");
+        int tot = 0;
+        for (Row r : a.rows) {
+            Integer qt = Integer.parseInt(r.values.get(idQt));
+            Integer price = Integer.parseInt(r.values.get(idPrezzo));
+            int t = qt * price;
+            orderTotal.put(r.values.get(idProd), t);
+            tot += t;
+        } // TODO: CHECK THIS SOMETHING ISN'T WORKING, ITERATING TWICE ON ELEMENTS 
+
+        // getting the most expensive item
+        int maxIndex = 0;
+        for (int i = 1; i < products.rows.size(); i++) {
+            Integer maxPrice = Integer.parseInt(products.rows.get(maxIndex).values.get(2));
+            Integer currentPrice = Integer.parseInt(products.rows.get(i).values.get(2));
+
+            if (currentPrice > maxPrice)
+                maxIndex = i;
+        }
+
+        String maxProductId = products.rows.get(maxIndex).values.get(0);
+
+        ArrayList<String> id_utente = new ArrayList<>();
+
+        for (int i = 0; i < orders.rows.size(); i++) {
+            String curProductId = orders.rows.get(i).values.get(2);
+            String curUserId = orders.rows.get(i).values.get(2);
+            if (curProductId.equals(maxProductId)) {
+                id_utente.add(curUserId);
+            }
+        }
+
+        ArrayList<Row> out = new ArrayList<>();
+        for (String id : id_utente) {
+            Relation r = selection(ppl, "id", id);
+            out.addAll(r.rows);
+        }
+
+        // OUT
+        System.out.println("Total prices: " + tot);
+        System.out.println("Total per order:");
+        for (String key : orderTotal.keySet()) {
+            System.out.println(key + ": " + orderTotal.get(key));
+        }
+        System.out.println("Users who bought the most expensive item:");
+        for (Row row : out) {
+            row.printRow();
+        }
+
     }
-
-
-
 
     public static Relation selection(Relation input, String key, String value) {
         int index = input.header.indexOf(key);
@@ -168,10 +214,13 @@ public class Main {
     }
 
     public static Relation prodCartesiano(Relation one, Relation two) {
-        if (checkEquality(one.header, two.header)) {
-            System.out.println("The headers contain equal attributes, consider renaming");
-            return null;
-        }
+        /*
+         * if (checkEquality(one.header, two.header)) {
+         * System.out.println("The headers contain equal attributes, consider renaming"
+         * );
+         * return null;
+         * }
+         */
 
         ArrayList<String> newHeader = new ArrayList<>();
         ArrayList<Row> newRows = new ArrayList<>();
@@ -196,18 +245,79 @@ public class Main {
     }
 
     // JOIN TROUGH PROJECTION
-    public static Relation joinProj(Relation one, Relation two, String[] junctionField) {
-        for (String j : junctionField) {
-            if(!one.header.contains(j) || !two.header.contains(j)){
-                System.out.println("The junction values are not in both of the relations");
-                return null;
-            }
-        }
-            return null;
+    /*
+     * 
+     * public static Relation joinProj(Relation one, Relation two, String[]
+     * junctionField) {
+     * for (String j : junctionField) {
+     * if(!one.header.contains(j) || !two.header.contains(j)){
+     * System.out.println("The junction values are not in both of the relations");
+     * return null;
+     * }
+     * }
+     * Relation out = new Relation(one.header, one.rows);
+     * for (int i = 0; i < junctionField.length; i++) { // JUN FIELDS
+     * int oneIndex = one.header.indexOf(junctionField[i]);
+     * int twoIndex = two.header.indexOf(junctionField[i]);
+     * ArrayList<Row> newRows = new ArrayList<>();
+     * for (int j = 0; j < one.rows.size(); j++) { // A
+     * Row row1 = one.rows.get(j);
+     * for (int j2 = 0; j2 < two.rows.size(); j2++) { // B
+     * Row row2 = two.rows.get(j);
+     * 
+     * if(row1.values.get(oneIndex).equals(row2.values.get(twoIndex))){
+     * ArrayList<String> newVals = new ArrayList<>();
+     * newVals.addAll(row1.values);
+     * newVals.addAll(row2.values);
+     * newVals.remove(oneIndex+twoIndex);
+     * 
+     * Row nRow = new Row(newVals);
+     * }
+     * }
+     * }
+     * }
+     * }
+     */
 
+    public static Relation join(Relation one, Relation two, String[] junctionField) {
+        Relation out = prodCartesiano(one, two);
+        return search(out, 0, junctionField);
     }
 
+    public static Relation search(Relation one, int i, String[] junctionField) {
 
+        if (i == junctionField.length) {
+            return one;
+        }
+        String key = junctionField[i];
+
+        if (!one.header.contains(key)) {
+            System.out.println("Chiave non esiste negli header");
+            return null;
+        }
+
+        ArrayList<String> newHeader = new ArrayList<>();
+        newHeader.addAll(one.header);
+
+        int oneI = newHeader.indexOf(key);
+        newHeader.remove(key);
+        int twoI = newHeader.indexOf(key) + 1; // because we just removed 1 element
+
+        ArrayList<Row> newRows = new ArrayList<>();
+
+        for (int j = 0; j < one.rows.size(); j++) {
+
+            if (one.rows.get(j).values.get(oneI).equals(one.rows.get(j).values.get(twoI))) {
+                Row nRow = new Row();
+                nRow.values.addAll(one.rows.get(j).values);
+                nRow.values.remove(oneI);
+                newRows.add(nRow);
+            }
+
+        }
+        Relation out = new Relation(newHeader, newRows);
+        return search(out, i + 1, junctionField);
+    }
 
     // HELPERS
 
