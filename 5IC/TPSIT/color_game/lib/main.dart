@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Colors.red,
     Colors.blue,
     Colors.green,
-    Colors.yellow
+    Colors.yellow,
   ];
   var indexes = [0, 0, 0, 0];
 
@@ -47,8 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var remainingGuesses = 5;
 
- List<List<int>> get guesses => List.generate(5, (_) => List.generate(colors.length, (_) => 0)); // empty thing of guesses
-  
+  List<List<int>> get guesses => List.generate(
+    5,
+    (_) => List.generate(colors.length, (_) => 0),
+  ); // empty thing of guesses
 
   @override
   void initState() {
@@ -58,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void init() {
     var rng = Random();
-    
+
     for (var i = 0; i < indexes.length; i++) {
       winningComb[i] = rng.nextInt(colors.length - 1) + 1;
       print(winningComb[i]);
@@ -80,7 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setMessage("Won!");
 
       await Future.delayed(const Duration(seconds: 5), () {
-        print("Copite");
         reset();
       });
     } else {
@@ -115,53 +116,56 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Color guessing'),
-      ),
+      appBar: AppBar(title: const Text('Color guessing')),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            /*
-            
-            Text(message, style: TextStyle(fontSize: 20)),
-            SizedBox(bottom
-                ElevatedButton(
-                  onPressed: () => changeColor(0),
-                  child: Container(height: 55),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colors[indexes[0]],
-                  ),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(message, style: TextStyle(fontSize: 20)),
+          SizedBox(height: 40),
+          Row(
+            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => changeColor(0),
+                child: Container(height: 55),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors[indexes[0]],
                 ),
-                ElevatedButton(
-                  onPressed: () => changeColor(1),
-                  child: Container(height: 55),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: colors[indexes[1]]),
+              ),
+              ElevatedButton(
+                onPressed: () => changeColor(1),
+                child: Container(height: 55),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors[indexes[1]],
                 ),
-                ElevatedButton(
-                  onPressed: () => changeColor(2),
-                  child: Container(height: 55),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: colors[indexes[2]]),
+              ),
+              ElevatedButton(
+                onPressed: () => changeColor(2),
+                child: Container(height: 55),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors[indexes[2]],
                 ),
-                ElevatedButton(
-                  onPressed: () => changeColor(3),
-                  child: Container(height: 55),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: colors[indexes[3]]),
+              ),
+              ElevatedButton(
+                onPressed: () => changeColor(3),
+                child: Container(height: 55),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors[indexes[3]],
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
+        ],
       ),
-      /*
+      
       
       floatingActionButton: FloatingActionButton(
         onPressed: () => buttonAction(),
         tooltip: 'Reset',
         child: const Icon(Icons.question_mark),
       ),
-       */
+       
     );
   }
 }
