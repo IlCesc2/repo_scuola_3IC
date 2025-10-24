@@ -20,7 +20,9 @@ public class Relation {
         try (BufferedReader br = new BufferedReader(new FileReader(csvfile))) {
             String line;
             int i =0; 
+
             while ((line = br.readLine()) != null) {
+                line= line.replaceAll("\"","");
                 String[] values = line.split(",");
                 Row newRow = new Row();
 
