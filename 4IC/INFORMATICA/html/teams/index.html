@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+
+<body>
+    <form id="form_data" >
+        <input type="text" name="" id="name">
+        <input type="text" name="" id="trainer">
+        <input type="number" name="" id="score">
+        <input type="file" name="" id="img">
+        <input type="number" name="" id="goals_taken">
+        <input type="number" name="" id="goals_scored">
+            <input type="submit" name="" id="submit">
+     
+        
+    </form>
+    <button onclick="resetForm()">Reset</button>
+
+    <ul id="list">
+
+    </ul>
+</body>
+
+<script>
+    let squads = []
+    let lastID = 1
+    let isEditing = false
+
+    class Squadra {
+        constructor(name,trainer, score,img,goals_taken,goals_scored){
+            this.id=lastID
+            this.name= name
+            this.trainer=trainer
+            this.score=score
+            this.img=img
+            this.goals_taken=goals_taken
+            this.goals_scored=goals_scored
+            lastID++;
+        }
+        toString(){
+            return `ID:${this.id}, Name:${this.name}, Trainer:${this.trainer}, Score:${this.score}, Goals Scored:${this.goals_scored}, Goals Taken:${this.goals_taken}`
+        }
+    }
+
+    function submit(e) {
+        e.preventDefault()
+        const name= document.getElementById("name").value
+        const trainer= document.getElementById("trainer").value
+        const score= document.getElementById("score").value
+        const img= document.getElementById("img").value
+        const goals_taken= document.getElementById("goals_taken").value
+        const goals_scored= document.getElementById("goals_scored").value
+        const newSquad = new Squadra(name,trainer,score,img,goals_taken,goals_scored)
+        
+        addToList(newSquad)
+    }
+
+    function addToList(squad){
+        
+        squads.push(squad)
+        const newDivSquad = document.createElement("div")
+        newDivSquad.classList.add("el")
+
+        const p = document.createElement("p")
+        p.textContent = squad.toString()
+
+        const b = document.createElement("button")
+        b.innerText="Bea more"
+        b.onclick = ()=> populateForm(squad)
+        //b.addEventListener("click", populateForm(squad))
+
+        newDivSquad.appendChild(p)
+        newDivSquad.appendChild(b)
+
+
+        document.getElementById("list").appendChild(newDivSquad)
+    }
+    function editSquad(id, squad){
+        squads.forEach((squad)=>{
+            if(squad.id==id){
+                squad=squad
+                return;
+            }
+        })
+        addToList()
+    }
+
+    function populateForm(squad){
+        document.getElementById("name").value= squad.name
+        document.getElementById("trainer").value=squad.trainer
+        document.getElementById("score").value=squad.score
+        document.getElementById("img").value=squad.img
+        document.getElementById("goals_taken").value=squad.goals_taken
+        document.getElementById("goals_scored").value=squad.goals_scored
+        isEditing= true
+    }
+
+    function resetForm(){
+        document.getElementById("name").value=""
+        document.getElementById("trainer").value=""
+        document.getElementById("score").value=""
+        document.getElementById("img").value=""
+        document.getElementById("goals_taken").value=""
+        document.getElementById("goals_scored").value=""
+        isEditing=false
+    }
+
+
+
+    document.getElementById("form_data").addEventListener("submit", submit)
+
+</script>
+
+<style>
+    #form_data{
+        display: flex;
+        flex-direction: column;
+        max-width: 250px;
+        gap: 10px;
+    }
+    .el {
+        border: 1px solid black;
+        border-radius: 20;
+    }
+</style>
+</html>

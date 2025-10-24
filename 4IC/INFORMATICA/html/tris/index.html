@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tris</title>
+</head>
+
+
+<body>
+    <div class="main">
+        <p id="score"></p>
+        <div class="main-grid"></div>
+        <button id="restart-button" onclick="init()">Restart</button>
+    </div>
+</body>
+
+<script>
+    let currentTurn, gridData;
+
+    function clickTile(i, j){
+        if(gridData[i][j] !== '' || document.getElementById('restart-button').style.display == 'block') return
+        const currentValue = currentTurn ==0 ? 'X': 'O' ;
+        gridData[i][j] = currentValue 
+        document.getElementById(`tile-${i}-${j}`).innerText = currentValue
+        if( check()) stopEvents();
+        currentTurn = (currentTurn+1) %2 
+    }
+
+    function init(){
+        document.getElementById('restart-button').style.display='none'
+        gridData=[[],[],[]]
+        currentTurn=0
+        document.getElementsByClassName("main-grid")[0].innerHTML=''
+        setLabel("Tris")
+        
+        for(let i = 0; i< 3 ; i++){
+            for(let j = 0; j < 3 ; j++){
+                const newTile = document.createElement('div');
+                newTile.classList.add('tile')
+                newTile.innerText="";
+                newTile.onclick=()=>clickTile(i, j)
+                newTile.id = `tile-${i}-${j}`;
+                document.getElementsByClassName("main-grid")[0].appendChild(newTile)
+                gridData[i][j] = "";
+            }
+        }
+       
+    }
+    function setLabel(s){
+        document.getElementById("score").innerText= s
+    }
+
+    function stopEvents(){
+
+        document.getElementById('restart-button').style.display='block'
+    }
+    
+
+    function check(){
+        let N = 3
+        
+        for (let i = 0; i < N; i++) {
+            if(gridData[i][0] == gridData[i][1] && gridData[i][1] == gridData[i][2] && gridData[i][0] != "" ){
+                
+                //console.log(gridData[i][0]+" Won!");
+                setLabel(gridData[i][0]+" Won!")
+                return true;
+            } else if(gridData[0][i] == gridData[1][i] && gridData[1][i] == gridData[2][i] &&gridData[0][i]!="" ){
+                
+                //console.log(gridData[0][i] +" Won!");
+                setLabel(gridData[0][i] +" Won!")
+                return true;
+            } 
+        }
+        if(gridData[0][0] == gridData[1][1] && gridData[1][1]== gridData[2][2] && gridData[0][0]!=""){
+            //console.log(gridData[0][0] +" Won!")
+            setLabel(gridData[0][0] +" Won!")
+            return true;
+        } else if(gridData[0][2] == gridData[1][1] && gridData[1][1] == gridData[2][0] && gridData[0][2]!=""){
+            //console.log(gridData[0][0] +" Won!")
+            setLabel(gridData[0][0] +" Won!")
+            return true;
+        }
+
+        for (let i = 0; i < N; i++) {
+            for (let j = 0; j < N; j++) {
+                if(gridData[i][j] == "") {
+                    console.log("Game is still going on!")
+                    return false;
+                }
+            }
+        }
+        setLabel("Tie!")
+        return true
+        //console.log("Tie!")
+
+    }
+    init()
+</script>
+<style>
+    .main{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        place-content: center;
+        align-items: center;
+    }
+    .main-grid{
+        display: grid;
+        grid-auto-flow: column;
+    
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+
+    }
+    
+    .tile{
+        border: 1px solid red;
+        width: 10vw;
+        height: 10vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font: 700;
+        font-weight: bolder;
+    }
+    #restart-button{
+        margin-top: 20px;
+        padding: 10px;
+        text-align: center;
+        background-color: green;
+        color: white;
+        font-weight: bold;
+        font: 700;
+        
+    }
+    
+</style>
+</html>

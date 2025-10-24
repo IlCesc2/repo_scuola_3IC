@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZucWeb</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <main class="m">
+        <h1>Contact Us</h1>
+        <form id="f" class="shown">
+            <input type="text" name="Nome" id="nome" placeholder="Nome" required>
+            <input type="text" name="Cognome" id="cognome" placeholder="Cognome" required> 
+         
+            <input type="email" name="Email" id="email" placeholder="Email" required>
+            <div id="c1">
+                <input type="checkbox" name="check1" id="check1" value="Problema Hardware">
+                <label for="check1">Problema Hardware</label>
+            </div>
+            <div id="c2">
+                <input type="checkbox" name="check2" id="check2" value="Problema Software">
+                <label for="check2">Problema Software</label>
+            </div>
+            <div id="c3">
+                <input type="checkbox" name="check3" id="check3" value="Problema Rete">
+                <label for="check3">Problema Rete</label>
+            </div>
+
+            <textarea name="Messaggio" id="messaggio" cols="40" rows="10" placeholder="Messaggio" required></textarea>
+            <input type="submit" id ="s">
+        </form>
+        <p class="hidden" id ="out">
+            
+        </p>
+    </main>
+    
+</body>
+<script src="script.js"></script>
+
+</html>
