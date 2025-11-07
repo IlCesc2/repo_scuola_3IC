@@ -1,0 +1,35 @@
+SELECT * FROM `city` WHERE `District`='Noord-Holland' ORDER BY ASC;
+
+SELECT * FROM `country` WHERE `Continent` ='Europe';
+
+SELECT * FROM `country` WHERE `Continent` ='Europe' AND `IndepYear`> 1950;
+
+SELECT country.Name AS Stato, city.Name AS Città FROM country INNER JOIN city WHERE city.ID=country.Capital and city.Population < 3000000;
+
+SELECT * From country WHERE `Continent`= "Europe" ORDER BY GNP DESC;  
+
+SELECT Name, Population FROM `city` WHERE Population > 5000000 ORDER BY Population ASC;
+
+SELECT `Code`,`Name` from country WHERE LifeExpectancy < 60 and Continent="Asia" ORDER by `Name`;
+
+SELECT * FROM countrylanguage WHERE CountryCode = "BRA" AND isOfficial = "F" ORDER BY `Language` ASC;
+
+SELECT `Name`,`GovernmentForm`,`SurfaceArea` WHERE `Region` = "Middle East" ORDER BY SurfaceArea ASC;
+
+SELECT `Name` from city where `District` = "Queensland" AND ID >= 3000 AND ID <= 3100 ORDER by ID DESC; 
+
+SELECT count(*) from city;
+
+SELECT count(*) FROM `country` WHERE `IndepYear`<1800;
+
+SELECT count(*) FROM `countrylanguage` WHERE `isOfficial`="F";
+
+SELECT * FROM `city` WHERE `District`="Kanto" ;
+
+SELECT DISTINCT COUNT(`GovernmentForm`) FROM `country`;
+
+SELECT DISTINCT District FROM city WHERE Population> 8000000;
+
+SELECT DISTINCT Continent FROM `country`;
+
+SELECT CountryCode FROM `countrylanguage` WHERE `Percentage`>'95%';

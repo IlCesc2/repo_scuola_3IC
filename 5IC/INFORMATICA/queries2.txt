@@ -1,0 +1,6 @@
+SELECT Country.name FROM country INNER JOIN city ON city.CountryCode = country.Code;
+
+SELECT city.Name, country.Continent FROM city INNER JOIN country ON city.CountryCode = country.Code where city.Population > 1000000;
+
+SELECT Country.name FROM country INNER JOIN city ON city.CountryCode = country.Code;
+
