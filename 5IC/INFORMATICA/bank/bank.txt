@@ -1,0 +1,27 @@
+Q1) numero degli impiegati (employee) assegnati ad ogni dipartimento
+SELECT COUNT(EMP_ID), DEPT_ID FROM `employee` GROUP BY DEPT_ID;
+
+Q2) numero delle transazioni (transaction) effettuate da ogni cassiere (teller)
+SELECT COUNT(`TXN_ID`), `TELLER_EMP_ID` FROM `acc_transaction` GROUP BY `TELLER_EMP_ID`;
+
+
+Q3) valore medio, massimo, minimo dei saldi disponibili (avail_balance)
+SELECT AVG(`AVAIL_BALANCE`),MAX(`AVAIL_BALANCE`), MIN(`AVAIL_BALANCE`) FROM `account`;
+
+Q4) nome, cognome e città dei clienti con saldo disponibile (avail_balance) compreso tra 500 e 5000
+SELECT individual.FIRST_NAME, individual.LAST_NAME, customer.city 
+FROM account INNER JOIN individual ON account.ACCOUNT_ID = individual.CUST_ID 
+INNER JOIN customer ON customer.CUST_ID = individual.CUST_ID 
+WHERE account.AVAIL_BALANCE > 500 AND account.AVAIL_BALANCE < 5000;
+
+
+Q5) titolo, nome e cognome dei dipendenti assegnati ad una certa agenzia (branch)
+SELECT `FIRST_NAME`,`LAST_NAME`,`TITLE` FROM `employee` WHERE ASSIGNED_BRANCH_ID = 1; 
+
+
+Q6) vista: elenco dei cassieri (teller)
+CREATE VIEW Cassieri AS SELECT * FROM employee WHERE TITLE = "Teller";
+
+
+Q7) sulla base della vista precedente elencare i cassieri (teller) assunti raggruppandoli per anno
+SELECT * FROM cassieri GROUP BY START_DATE;
