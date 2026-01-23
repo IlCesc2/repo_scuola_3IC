@@ -7,97 +7,7 @@ $y = 0;
 $oldTile = ".";
 $d = "";
 
-if (isset($_GET['punteggio'])) {
-    $punteggio = $_GET['punteggio'];
-    $x = $_GET['x'];
-    $y = $_GET['y'];
-    $oldTile = $_GET['oldTile'];
-    if(isset($_GET['nord'])){
-        $d = "nord";
-    } else if(isset($_GET['sud'])){
-        $d = "sud";
-    } else if(isset($_GET['est'])){
-        $d = "est";
-    } else {
-        $d = "ovest";
-    }
-
-    // direction
-    $xD =0;
-    $yD =0;
-    switch ($d) {
-        case "nord":
-            echo "1";
-            $yD=-1;
-            break;
-
-        case "sud":
-            echo "2";
-            $yD=1;
-
-            break;
-
-        case "est":
-            echo "3";
-
-            $xD=1;
-
-            break;
-
-        case "ovest":
-            echo "4";
-            $xD=-1;
-            break;
-
-    }
-
-    //movement
-
-    $mappa[$y][$x] = $oldTile;
-
-    $xP = $x + $xD;
-    $yP = $y + $yD;
-
-
-    if ($xP < count($mappa) && $xP >= 0) {
-        $oldTile = $mappa[$y][$x];
-        $x = $xP;
-    }
-
-
-    if ($yP < count($mappa) && $yP >= 0) {
-        $oldTile = $mappa[$y][$x];
-        $y = $yP;
-    }
-    echo count($mappa);
-    echo $yP;
-
-    echo "</br>";
-
-    echo $x;
-    echo $y;
-
-
-    $mappa[$y][$x] = "P";
-
-
-    // points
-
-    switch ($mappa[$y][$x]) {
-        case ".":
-            $punteggio += 1;
-        case "#":
-            $punteggio += -1;
-        case "~":
-            $punteggio += -2;
-        case "T":
-            $punteggio += 2;
-        case "E":
-            endGame();
-    }
-
-}
-
+$isGameOver = false;
 
 $mappa = [
     ['P', '.', '#', '.', '.', '~', 'T', '.', '.', '.'],
@@ -108,9 +18,104 @@ $mappa = [
 ];
 
 
-function endGame()
-{
-    echo "The game is Over!";
+if (isset($_GET['punteggio'])) {
+    $punteggio = $_GET['punteggio'];
+    $x = $_GET['x'];
+    $y = $_GET['y'];
+    $oldTile = $_GET['oldTile'];
+    if (isset($_GET['nord'])) {
+        $d = "nord";
+    } else if (isset($_GET['sud'])) {
+        $d = "sud";
+    } else if (isset($_GET['est'])) {
+        $d = "est";
+    } else {
+        $d = "ovest";
+    }
+
+    //smth
+    if($x !== 0 && $y !== 0){
+        $mappa[0][0] =".";
+    }
+
+    // direction
+    $xD = 0;
+    $yD = 0;
+    switch ($d) {
+        case "nord":
+            //echo "1";
+            $yD = -1;
+            break;
+
+        case "sud":
+            //echo "2";
+            $yD = 1;
+
+            break;
+
+        case "est":
+            //echo "3";
+
+            $xD = 1;
+
+            break;
+
+        case "ovest":
+            //echo "4";
+            $xD = -1;
+            break;
+
+    }
+
+    //movement
+
+    $mappa[$y][$x] = $oldTile;
+    $calcPointsX = false;
+    $calcPointsY = false;
+    $xP = $x + $xD;
+    $yP = $y + $yD;
+
+
+    if ($xP < count($mappa[0]) && $xP >= 0) {
+        $x = $xP;
+        $oldTile = $mappa[$y][$x] === "P" ? ".": $mappa[$y][$x];
+        $calcPointsX = true;
+    }
+
+
+    if ($yP < count($mappa) && $yP >= 0) {
+        $y = $yP;
+        $oldTile = $mappa[$y][$x] === "P" ? ".": $mappa[$y][$x];
+        $calcPointsY = true;
+    }
+
+    // points
+
+    if ($calcPointsX && $calcPointsY) {
+        switch ($mappa[$y][$x]) {
+            case ".":
+                $punteggio += 1;
+                break;
+            case "#":
+                $punteggio += -1;
+                break;
+            case "~":
+                $punteggio += -2;
+                break;
+            case "T":
+                $punteggio += 2;
+                break;
+            case "E":
+                $isGameOver=true;
+                echo "The game is Over!";
+                break;
+        }
+    }
+
+
+    // we move the p later so that we can calc the points on the right spot
+    $mappa[$y][$x] = "P";
+
 }
 
 // Funzione per stampare la mappa
@@ -123,9 +128,10 @@ function stampaMappa($mappa)
     echo "</pre>";
 }
 
-stampaMappa($mappa);
-echo "Punteggio " . $punteggio;
-
+if(!$isGameOver){
+    stampaMappa($mappa);
+    echo "Punteggio " . $punteggio;
+}
 
 ?>
 
