@@ -40,30 +40,37 @@ if (isset($_POST["title"])) {
 
     $ass_result = mysqli_fetch_assoc($ricetta);
 
-    print_r($ass_result);
+    //print_r($ass_result);
 
     foreach ($ass_result as $key => $value) {
-        echo $key." ".$value;
-        if ($key == "Id")
+        //echo $key." ".$value;
+        if ($key == "Id" || $key == "difficolta")
             continue;
 
         echo '<input type="text" name=' . $key . ' id=' . $key . ' value=' . $value . '>';
-    }
-    ;
+    };
 
-    echo '<select id="author" name="author" required>';
+    // difficolta
+    $difficolta = ["Facile", "Medio", "Difficile"];
 
+    echo '<select id="difficulty" name="difficulty" required>';
+    foreach ($difficolta as $d) {
+        echo '<option value=' . $d . 'selected=' . ($ass_result["difficolta"] = $d) . '>' . $d . '</option>';
+    };
+    echo '</select>';
+
+    // autori    
     $queryAutori = "SELECT * FROM autore";
     $autori = mysqli_query($conn, $queryAutori);
-
+    
+    echo '<select id="author" name="author" required>';
     foreach ($autori as $value) {
         echo '<option value=' . $value["id"] . 'selected=' . ($value["id"] = $id) . '>' . $value["nome"] . '</option>';
-    }
-    ;
-    echo '</select>'
+    };
+    echo '</select>';
 
 
-        ?>
+    ?>
 
 
     <input type="submit">
