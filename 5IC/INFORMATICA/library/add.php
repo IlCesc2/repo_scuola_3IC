@@ -18,8 +18,15 @@ if (isset($_POST["title"])) {
 
     print_r($_POST);
 
-    $sql = "INSERT INTO ricetta (title, AutoreID, tempo, numero_ingredienti, difficolta) VALUES ('$title', $autore, $tempo, $num_ingr,'$difficolta')";
-    $result = mysqli_query($conn, $sql);
+    $sql = "INSERT INTO ricetta (title, AutoreID, tempo, numero_ingredienti, difficolta) VALUES (?,?,?,?,?)";
+
+    
+    $query = $conn->prepare($sql);
+    $query->bind_param("siiis",$title, $autore, $tempo, $num_ingr,$difficolta );
+
+    $query->execute();
+
+    $result =  $query->get_result(); //mysqli_query($conn, $sql);
 
     mysqli_close($conn);
 }
@@ -27,7 +34,7 @@ if (isset($_POST["title"])) {
 
 ?>
 
-
+<h1>Aggiungi nuova ricetta</h1>
 
 <form action="add.php" method="POST">
     <input type="text" id="title" name="title" placeholder="Titolo" required>

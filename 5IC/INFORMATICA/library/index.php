@@ -1,3 +1,6 @@
+
+<h1>Ricette</h1>
+
 <form action="index.php" method="POST">
     <input type="text" id="title" name="title" placeholder="Titolo" >
   <!--  <input type="text" required> -->
@@ -25,6 +28,9 @@
     <input type="submit">
 </form>
 
+
+
+
 <table>
     <th>
         <tr>
@@ -43,21 +49,25 @@
     }
 
     $sql = "SELECT * FROM ricetta ";
+    $query = $conn->prepare($sql);
     
 
     if (isset($_POST["title"])) {
 
         $title = $_POST["title"];
         $autore = $_POST["autore"];
-
         $difficolta = $_POST["difficolta"];
     
-        $sql .= " WHERE title LIKE '$title' AND AutoreID=$autore AND difficolta='$difficolta'"; //"INSERT INTO ricetta (title, AutoreID, tempo, numero_ingredienti, difficolta) VALUES ($title, $autore, $tempo, $num_ingr,$difficolta)";
+        $sql .= " WHERE title LIKE ? AND AutoreID=? AND difficolta=?"; //"INSERT INTO ricetta (title, AutoreID, tempo, numero_ingredienti, difficolta) VALUES ($title, $autore, $tempo, $num_ingr,$difficolta)";
+       
+        $query = $conn->prepare($sql);
+        $query->bind_param("sis",$title, $autore, $difficolta );
+        
     };
 
 
-
-    $result = mysqli_query($conn, $sql);
+    $query->execute(); //mysqli_query($conn, $sql);
+    $result = $query->get_result();
 
     if ($result === false) {
         exit("Errore: impossibile eseguire la query." . mysqli_error($conn));
